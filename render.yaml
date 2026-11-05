@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: foxsitechat
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: FOX_GROQ_API_KEY
+        sync: false
+      - key: FOX_GROQ_MODEL
+        value: meta-llama/llama-3.1-8b-instruct:free
+      - key: FOX_AI_API_URL
+        value: https://openrouter.ai/api/v1/chat/completions
+      - key: FOX_ADMIN_TOKEN
+        sync: false
+      - key: FOX_ALLOWED_ORIGINS
+        value: https://catalogo.redefox.com.br
+      - key: FOX_CSV_DIR
+        value: /opt/render/project/src/data/estoque
+      - key: FOX_MAX_TOKENS
+        value: "512"
+      - key: FOX_TEMP
+        value: "0.3"
+    disk:
+      name: foxdata
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

@@ -1,0 +1,38 @@
+# Ambiente
+.env
+.env.*
+!.env.example
+
+# Banco de dados
+fox_catalog.db
+fox_catalog.db-shm
+fox_catalog.db-wal
+*.db
+*.sqlite
+
+# Backups
+backups/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Windows
+Thumbs.db
+desktop.ini
+*.bat
+configurar_startup_api.ps1
+
+# IDE
+.vscode/
+.idea/
+*.swp

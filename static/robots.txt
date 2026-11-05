@@ -1,0 +1,24 @@
+# Fox Pneus — robots.txt
+# https://catalogo.redefox.com.br/
+
+User-agent: *
+Allow: /
+Allow: /static/
+Disallow: /admin
+Disallow: /admin/
+Disallow: /eventos
+Disallow: /cotacao/
+Disallow: /leads
+
+# Crawl delay para bots menos prioritários
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Crawl-delay: 30
+
+# Sitemaps
+Sitemap: https://catalogo.redefox.com.br/sitemap.xml

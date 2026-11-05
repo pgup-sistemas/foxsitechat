@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d0d0d"/>
+      <stop offset="100%" style="stop-color:#1a0a0a"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- Red accent line -->
+  <rect x="0" y="0" width="8" height="630" fill="#f00026"/>
+  <!-- Tire decoration circles -->
+  <circle cx="980" cy="315" r="260" fill="none" stroke="#f00026" stroke-width="2" opacity="0.06"/>
+  <circle cx="980" cy="315" r="200" fill="none" stroke="#f00026" stroke-width="1.5" opacity="0.05"/>
+  <circle cx="980" cy="315" r="140" fill="none" stroke="#f00026" stroke-width="1" opacity="0.07"/>
+  <circle cx="980" cy="315" r="80"  fill="none" stroke="#f00026" stroke-width="1" opacity="0.08"/>
+  <!-- Spoke lines -->
+  <line x1="980" y1="55"  x2="980" y2="575" stroke="#f00026" stroke-width="1" opacity="0.04"/>
+  <line x1="720" y1="315" x2="1240" y2="315" stroke="#f00026" stroke-width="1" opacity="0.04"/>
+  <line x1="796" y1="131" x2="1164" y2="499" stroke="#f00026" stroke-width="1" opacity="0.04"/>
+  <line x1="796" y1="499" x2="1164" y2="131" stroke="#f00026" stroke-width="1" opacity="0.04"/>
+  <!-- Logo mark -->
+  <rect x="64" y="64" width="56" height="56" rx="12" fill="#f00026"/>
+  <text x="92" y="103" font-family="Arial Black, sans-serif" font-size="32" font-weight="900" fill="white" text-anchor="middle">F</text>
+  <!-- Brand name -->
+  <text x="140" y="96" font-family="Arial Black, sans-serif" font-size="40" font-weight="900" fill="white" letter-spacing="-1">FOX PNEUS</text>
+  <text x="140" y="118" font-family="Arial, sans-serif" font-size="15" fill="#e8b84b" letter-spacing="3">REDE FOX — NORTE DO BRASIL</text>
+  <!-- Main headline -->
+  <text x="64" y="240" font-family="Arial Black, sans-serif" font-size="72" font-weight="900" fill="white" letter-spacing="-2">Catálogo Digital</text>
+  <text x="64" y="320" font-family="Arial Black, sans-serif" font-size="72" font-weight="900" fill="#f00026" letter-spacing="-2">de Pneus</text>
+  <!-- Subtitle -->
+  <text x="64" y="390" font-family="Arial, sans-serif" font-size="26" fill="#cccccc">Estoque em tempo real · Cotação pelo WhatsApp</text>
+  <!-- Cities -->
+  <text x="64" y="445" font-family="Arial, sans-serif" font-size="18" fill="#888888">Porto Velho · Manaus · Ji-Paraná · Ariquemes · Cacoal · Vilhena · Parintins · Xapuri</text>
+  <!-- Bottom bar -->
+  <rect x="0" y="580" width="1200" height="50" fill="#f00026" opacity="0.12"/>
+  <text x="64"  y="612" font-family="Arial, sans-serif" font-size="16" fill="#f00026">🛞 8 filiais em RO, AM e AC</text>
+  <text x="480" y="612" font-family="Arial, sans-serif" font-size="16" fill="#e8b84b">catalogo.redefox.com.br</text>
+  <text x="900" y="612" font-family="Arial, sans-serif" font-size="16" fill="#666">Maior rede de pneus do Norte</text>
+</svg>
