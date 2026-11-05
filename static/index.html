@@ -543,6 +543,19 @@ h1 em{font-style:normal;color:var(--red)}
 <style>
 @media(max-width:480px){.tv-num{display:none!important}}
 @media(max-width:600px){
+  /* header compacto */
+  header{gap:4px}
+  nav{gap:0}
+  .nav-btn{padding:7px 10px;font-size:12px}
+  /* botão WhatsApp: só ícone, sem borda/padding */
+  header>a{
+    margin-left:6px!important;
+    padding:7px 8px!important;
+    background:transparent!important;
+    border-color:transparent!important;
+    gap:0!important
+  }
+  /* chat panel fullscreen */
   .cpanel{
     right:0;left:0;bottom:0;top:60px;
     width:100%;height:auto;
@@ -555,6 +568,8 @@ h1 em{font-style:normal;color:var(--red)}
   .msg{max-width:100%;word-break:break-word}
   .ci{font-size:16px}
   .cir{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+  /* evita que conteúdo fique atrás do FAB */
+  main,section,.hero,.results{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))!important}
 }
 </style>
 
