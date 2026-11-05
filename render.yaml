@@ -17,6 +17,8 @@ services:
         value: https://catalogo.redefox.com.br
       - key: FOX_CSV_DIR
         value: /opt/render/project/src/data/estoque
+      - key: FOX_DB_PATH
+        value: /opt/render/project/src/data/fox_catalog.db
       - key: FOX_MAX_TOKENS
         value: "512"
       - key: FOX_TEMP

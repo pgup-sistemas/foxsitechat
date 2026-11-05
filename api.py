@@ -40,7 +40,7 @@ except ImportError:
     pass
 
 try:
-    from fastapi import FastAPI, HTTPException, Query, Request
+    from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.staticfiles import StaticFiles
     from fastapi.responses import FileResponse
@@ -950,6 +950,19 @@ def apagar_historico(session_id: str):
     """Limpa o histórico de uma sessão de chat."""
     limpar_historico(session_id)
     return {"ok": True, "session_id": session_id}
+
+
+@app.post("/admin/upload-banco", tags=["Admin"])
+async def upload_banco(token: str = Query(...), file: UploadFile = File(...)):
+    """Recebe o fox_catalog.db e salva no disco persistente."""
+    admin_token = os.environ.get("FOX_ADMIN_TOKEN", "fox2024")
+    if token != admin_token:
+        raise HTTPException(403, "Token inválido")
+    dest = DB_PATH
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    conteudo = await file.read()
+    dest.write_bytes(conteudo)
+    return {"ok": True, "tamanho_bytes": len(conteudo), "caminho": str(dest)}
 
 
 @app.post("/admin/recarregar", tags=["Admin"])

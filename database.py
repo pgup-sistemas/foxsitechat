@@ -8,11 +8,13 @@ Uso:
     python database.py --reset     # apaga e recria do zero (CUIDADO)
 """
 
+import os
 import sqlite3
 import sys
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parent / "fox_catalog.db"
+_db_env = os.environ.get("FOX_DB_PATH", "").strip()
+DB_PATH = Path(_db_env) if _db_env else Path(__file__).resolve().parent / "fox_catalog.db"
 
 # ---------------------------------------------------------------------------
 # DDL — definição das tabelas
