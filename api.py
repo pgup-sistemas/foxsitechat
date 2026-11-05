@@ -837,8 +837,8 @@ _FILIAL_NOME = {
     "ARIQUEMES": "Fox Pneus Ariquemes",
     "JI-PARANA": "Fox Pneus Ji-Paraná",
     "CACOAL": "Fox Pneus Cacoal",
-    "C.AUTO PVH": "Fox Pneus Porto Velho",
-    "C.AUTO VLH": "Fox Pneus Vilhena",
+    "C.AUTO PVH": "Center Auto PVH",
+    "C.AUTO VLH": "Center Auto Vilhena",
     "PARINTINS": "Fox Pneus Parintins",
     "XAPURI": "Fox Pneus Xapuri",
 }
