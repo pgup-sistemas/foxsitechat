@@ -542,6 +542,20 @@ h1 em{font-style:normal;color:var(--red)}
 </header>
 <style>
 @media(max-width:480px){.tv-num{display:none!important}}
+@media(max-width:600px){
+  .cpanel{
+    right:0;left:0;bottom:0;top:60px;
+    width:100%;height:auto;
+    border-radius:16px 16px 0 0;
+    border-bottom:none;
+    padding-bottom:env(safe-area-inset-bottom,0px)
+  }
+  .fab-wrap{bottom:calc(16px + env(safe-area-inset-bottom,0px));right:16px}
+  .msgs{padding:12px;overflow-x:hidden}
+  .msg{max-width:100%;word-break:break-word}
+  .ci{font-size:16px}
+  .cir{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 
 <div class="hero">
