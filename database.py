@@ -178,8 +178,8 @@ FILIAIS_INICIAIS = [
     ("ARIQUEMES", "Fox Pneus Ariquemes",    "RO", "Ariquemes",  None),
     ("JI-PARANA", "Fox Pneus Ji-Paraná",   "RO", "Ji-Paraná",  None),
     ("CACOAL",    "Fox Pneus Cacoal",       "RO", "Cacoal",     None),
-    ("C.AUTO PVH","Centauro Auto PVH",      "RO", "Porto Velho", None),
-    ("C.AUTO VLH","Centauro Auto Vilhena",  "RO", "Vilhena",    None),
+    ("C.AUTO PVH","Center Auto PVH",      "RO", "Porto Velho", None),
+    ("C.AUTO VLH","Center Auto Vilhena",  "RO", "Vilhena",    None),
     ("PARINTINS",  "Fox Pneus Parintins",   "AM", "Parintins",  None),
     ("XAPURI",     "Fox Pneus Xapuri",      "AC", "Xapuri",     None),
 ]
