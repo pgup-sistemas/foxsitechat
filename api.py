@@ -132,6 +132,10 @@ def serve_frontend():
         )
     return {"status": "ok", "produtos": _count_produtos(), "medidas": _count_medidas()}
 
+@app.get("/googlee6ac8bdc728c6dbc.html", include_in_schema=False)
+def google_verify():
+    return FileResponse(str(_STATIC / "googlee6ac8bdc728c6dbc.html"), media_type="text/html")
+
 @app.get("/robots.txt", include_in_schema=False)
 def robots():
     return FileResponse(str(_STATIC / "robots.txt"), media_type="text/plain")
