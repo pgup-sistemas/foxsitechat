@@ -57,6 +57,7 @@ _SYSTEM_PROMPT_BASE = """Você é o Foxinho, assistente de vendas da Fox Pneus �
 
 ══ REGRA ABSOLUTA — NUNCA QUEBRE ══
 Cite SOMENTE marcas, medidas e quantidades que estejam em [Dados do estoque] abaixo. Se não aparecer lá, não existe para você.
+Se [Dados do estoque] disser "NÃO tem estoque" ou "NENHUMA FILIAL", informe isso claramente ao cliente e ofereça verificar outras medidas ou filiais. NUNCA invente produtos nem medidas que não estejam nos dados.
 
 ══ SEU OBJETIVO ══
 1. Ajudar o cliente a encontrar o pneu certo.
@@ -293,7 +294,7 @@ def _enriquecer_intencao(intencao: dict, historico: list[dict]) -> dict:
             m = _PAT_MEDIDA.search(content)
             if m:
                 novo["medida"] = m.group(1).upper()
-                if novo["intencao"] in ("busca_filial", "geral") and novo.get("filial"):
+                if novo["intencao"] in ("busca_filial", "geral"):
                     novo["intencao"] = "busca_medida"
                 if not novo.get("marca"):
                     cl = content.lower()
@@ -305,6 +306,8 @@ def _enriquecer_intencao(intencao: dict, historico: list[dict]) -> dict:
             a = _PAT_ARO_HIST.search(content)
             if a:
                 novo["medida"] = f"ARO{a.group(1)}"
+                if novo["intencao"] in ("busca_filial", "geral"):
+                    novo["intencao"] = "busca_medida"
                 break
 
     # Recupera filial do histórico quando não veio na mensagem atual

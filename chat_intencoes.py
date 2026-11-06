@@ -370,19 +370,37 @@ def gerar_contexto_sql(intencao: dict, conn: sqlite3.Connection) -> dict:
         rows = conn.execute(sql, params).fetchall()
         dados = [dict(r) for r in rows]
 
+        # Fallback: filial solicitada sem estoque → busca em todas as filiais
+        filial_sem_estoque = None
+        if not dados and intencao["filial"]:
+            filial_sem_estoque = intencao["filial"]
+            sql_all = sql.replace("AND e.filial = ?", "")
+            rows = conn.execute(sql_all, [medida_param]).fetchall()
+            dados = [dict(r) for r in rows]
+
         if dados:
-            filiais_unicas = list({d["filial_nome"] for d in dados if d["filial_nome"] not in ("DESCONHECIDA", None)}) or ["várias filiais"]
+            filiais_unicas = sorted({d["filial_nome"] for d in dados if d["filial_nome"] not in ("DESCONHECIDA", None)}) or ["várias filiais"]
             total = sum(d["qtd"] for d in dados)
-            marcas = list({d["marca"] for d in dados if d["marca"]})
-            nomes = list({d["nome"] for d in dados if d["nome"]})[:5]
+            marcas = sorted({d["marca"] for d in dados if d["marca"]})
+            medidas_unicas = sorted({d["medida"] for d in dados if d["medida"]})
+            prefixo = ""
+            if filial_sem_estoque:
+                prefixo = (
+                    f"ATENÇÃO: A filial {filial_nome(filial_sem_estoque)} NÃO tem estoque de {medida}. "
+                    "Mas encontrei nas seguintes filiais: "
+                )
             resumo = (
-                f"Medida {medida}: {len(dados)} opções em estoque. "
-                f"Filiais: {', '.join(filiais_unicas)}. "
-                f"Estoque total: {total:.0f} unidades. "
-                + (f"Marcas: {', '.join(marcas)}. " if marcas else f"Produtos: {'; '.join(nomes)}. ")
+                prefixo
+                + f"Medida(s) disponível(eis): {', '.join(medidas_unicas)}. "
+                f"Filiais com estoque: {', '.join(filiais_unicas)}. "
+                f"Total: {total:.0f} unidades. "
+                + (f"Marcas: {', '.join(marcas)}." if marcas else "")
             )
         else:
-            resumo = f"Medida {medida}: nenhum produto em estoque no momento."
+            resumo = (
+                f"Medida {medida}: NENHUMA FILIAL tem esse pneu em estoque no momento. "
+                "Não invente produtos. Informe ao cliente que não temos essa medida disponível."
+            )
 
     # --- Busca por filial --------------------------------------------------
     elif intencao["intencao"] == "busca_filial" and intencao["filial"]:
