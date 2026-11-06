@@ -901,8 +901,8 @@ def _salvar_lead_chat(lead_data: dict) -> bool:
     try:
         conn = get_conn(DB_PATH)
         conn.execute(
-            """INSERT INTO lead(nome_cliente, telefone, medida_buscada, filial_id, origem, criado_em)
-               VALUES (?, ?, ?, NULL, 'chat_ia', datetime('now'))""",
+            """INSERT INTO lead(nome_cliente, telefone, medida_buscada, status, origem, criado_em, atualizado_em)
+               VALUES (?, ?, ?, 'novo', 'chat_ia', datetime('now'), datetime('now'))""",
             (
                 lead_data.get("nome", ""),
                 lead_data.get("whatsapp", ""),
