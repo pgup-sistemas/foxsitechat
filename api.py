@@ -53,7 +53,7 @@ except ImportError:
 
 from database import get_conn, DB_PATH
 from carregar_estoque import carregar_tudo
-from chat import responder as chat_responder, ollama_ok, limpar_historico, LLAMA_MODEL
+from chat import responder as chat_responder, ollama_ok, limpar_historico, LLAMA_MODEL, extrair_lead
 
 # ---------------------------------------------------------------------------
 # Rate limiter simples (in-memory): max N req/min por IP
@@ -896,6 +896,39 @@ def _resumo_natural(intencao: dict, ctx: dict) -> str:
     return ctx.get("resumo") or "Não encontrei o que você procura agora. Fale com nossa equipe pelo WhatsApp! 💬"
 
 
+def _salvar_lead_chat(lead_data: dict) -> bool:
+    """Salva lead capturado pelo chat e notifica o vendedor por e-mail."""
+    try:
+        conn = get_conn(DB_PATH)
+        conn.execute(
+            """INSERT INTO lead(nome_cliente, telefone, medida_buscada, filial_id, origem, criado_em)
+               VALUES (?, ?, ?, NULL, 'chat_ia', datetime('now'))""",
+            (
+                lead_data.get("nome", ""),
+                lead_data.get("whatsapp", ""),
+                lead_data.get("interesse", ""),
+            ),
+        )
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+
+    # Notifica vendedor por e-mail (assíncrono, não bloqueia)
+    try:
+        from email_utils import notificar_vendedor_lead
+        notificar_vendedor_lead(
+            nome=lead_data.get("nome", ""),
+            whatsapp=lead_data.get("whatsapp", ""),
+            email=lead_data.get("email", ""),
+            interesse=lead_data.get("interesse", ""),
+        )
+    except Exception:
+        pass
+
+    return True
+
+
 @app.post("/chat", tags=["Chat"])
 def chat(req: ChatRequest):
     """
@@ -939,8 +972,19 @@ def chat(req: ChatRequest):
 
     # Modo normal (resposta completa)
     try:
-        resposta = chat_responder(req.pergunta, session_id=req.session_id, stream=False)
-        return {"resposta": resposta, "modo": "llm", "modelo": LLAMA_MODEL}
+        resposta_bruta = chat_responder(req.pergunta, session_id=req.session_id, stream=False)
+        resposta, lead_data = extrair_lead(resposta_bruta)
+
+        lead_capturado = False
+        if lead_data and lead_data.get("nome") and lead_data.get("whatsapp"):
+            lead_capturado = _salvar_lead_chat(lead_data)
+
+        return {
+            "resposta": resposta,
+            "modo": "llm",
+            "modelo": LLAMA_MODEL,
+            "lead_capturado": lead_capturado,
+        }
     except ConnectionError as e:
         raise HTTPException(503, f"Groq indisponível: {e}")
 

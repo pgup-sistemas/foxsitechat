@@ -232,3 +232,67 @@ def confirmacao_cotacao(nome: str, email: str, medida: str = "", filial_nome: st
         f"WhatsApp: {emp_wa_fmt}\n\n{emp_nome}"
     )
     enviar_async(email, assunto, html, texto)
+
+
+def notificar_vendedor_lead(nome: str, whatsapp: str, email: str = "", interesse: str = "") -> None:
+    """Envia e-mail interno ao vendedor quando o chat captura um lead."""
+    cfg = _cfg()
+    destino = cfg.get("alert_email") or os.environ.get("FOX_ALERT_EMAIL", "")
+    if not destino:
+        return
+
+    emp_nome = _empresa("empresa_nome", "Fox Pneus")
+    emp_wa   = _empresa("empresa_whatsapp", "5569992323013")
+    wa_link  = f"https://wa.me/55{whatsapp.replace(' ','').replace('(','').replace(')','').replace('-','')}" if whatsapp else ""
+
+    assunto = f"[{emp_nome}] Novo lead pelo chat — {nome}"
+    linhas_detalhe = ""
+    if interesse:
+        linhas_detalhe += f"<li><strong>Interesse:</strong> {interesse}</li>"
+    if email:
+        linhas_detalhe += f"<li><strong>E-mail:</strong> {email}</li>"
+
+    botao = (
+        f'<a href="{wa_link}" style="display:inline-block;background:#25d366;color:#fff;'
+        f'font-weight:700;padding:12px 24px;border-radius:6px;text-decoration:none;font-size:14px;">'
+        f'💬 Chamar no WhatsApp</a>'
+    ) if wa_link else ""
+
+    html = f"""<!DOCTYPE html><html lang="pt-BR">
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#111;font-family:Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#111;">
+  <tr><td align="center" style="padding:32px 16px;">
+    <table width="560" cellpadding="0" cellspacing="0"
+           style="background:#1a1a1a;border-radius:12px;overflow:hidden;max-width:560px;">
+      <tr><td style="background:#c0392b;padding:20px 28px;">
+        <h1 style="margin:0;color:#fff;font-size:20px;font-weight:900;letter-spacing:1px;text-transform:uppercase;">
+          {emp_nome} — Novo Lead (Chat IA)</h1>
+      </td></tr>
+      <tr><td style="padding:24px 28px;">
+        <p style="margin:0 0 16px;color:#ccc;font-size:15px;">
+          Um cliente deixou os dados pelo chat assistente:
+        </p>
+        <ul style="margin:0 0 20px;padding-left:20px;color:#ccc;font-size:14px;line-height:2;">
+          <li><strong>Nome:</strong> {nome}</li>
+          <li><strong>WhatsApp:</strong> {whatsapp}</li>
+          {linhas_detalhe}
+        </ul>
+        {botao}
+        <p style="margin:20px 0 0;color:#666;font-size:12px;">
+          Dados coletados com consentimento via chat. Protegidos conforme a LGPD.
+        </p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body></html>"""
+
+    texto = (
+        f"Novo lead pelo chat — {emp_nome}\n\n"
+        f"Nome: {nome}\nWhatsApp: {whatsapp}\n"
+        f"{'Interesse: ' + interesse + chr(10) if interesse else ''}"
+        f"{'E-mail: ' + email + chr(10) if email else ''}"
+        f"\nAcesse: {wa_link}"
+    )
+    enviar_async(destino, assunto, html, texto)

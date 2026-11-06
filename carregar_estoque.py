@@ -267,6 +267,14 @@ def carregar_tudo(csv_dir: Path = CSV_DIR_DEFAULT, filtro_data: str = None):
     for r in cats:
         print(f"    {(r['categoria'] or 'N/A'):<15}: {r['n']:>5}")
 
+    # Oculta produtos que não são pneus (categoria desconhecido = peças, filtros, etc.)
+    inativos = conn.execute(
+        "UPDATE produto SET ativo=0 WHERE categoria='desconhecido' OR categoria IS NULL"
+    ).rowcount
+    conn.commit()
+    if inativos:
+        print(f"  Marcados ativo=0: {inativos:,} produtos não-pneus (categoria desconhecido/NULL)")
+
     conn.close()
     print(f"\n  Total: {total_ok:,} itens carregados, {total_erro} ignorados.\n")
 

@@ -4,21 +4,23 @@ Fox Pneus — Chat RAG com OpenRouter (Llama 3.1 / Qwen / etc.)
 Responde perguntas sobre estoque, medidas e veículos usando dados do SQLite
 como contexto dinâmico (RAG sem embeddings).
 
+Quando o cliente confirma todos os dados (nome + WhatsApp + email),
+o AI emite um sinal [[LEAD:{...}]] que o backend detecta para salvar
+o lead e notificar o vendedor.
+
 Configuração:
     FOX_GROQ_API_KEY   — chave da API (OpenRouter ou Groq)
-    FOX_GROQ_MODEL     — modelo (padrão: meta-llama/llama-3.1-8b-instruct:free)
+    FOX_GROQ_MODEL     — modelo (padrão: meta-llama/llama-3.1-8b-instruct)
     FOX_AI_API_URL     — URL base (padrão: OpenRouter)
     FOX_MAX_TOKENS     — máximo de tokens na resposta (padrão: 512)
     FOX_TEMP           — temperature (padrão: 0.3)
-
-OpenRouter (recomendado — gratuito): openrouter.ai/keys
-Groq (alternativa): console.groq.com/keys
 """
 
 from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -51,47 +53,53 @@ _historico: dict[str, list[dict]] = {}
 # ---------------------------------------------------------------------------
 # System prompt
 # ---------------------------------------------------------------------------
-_SYSTEM_PROMPT_BASE = """Você é o Foxinho, assistente de vendas da Fox Pneus — uma rede de pneus com filiais em RO, AM e AC.
+_SYSTEM_PROMPT_BASE = """Você é o Foxinho, assistente de vendas da Fox Pneus — uma rede especializada em pneus com filiais em RO, AM e AC.
 
-REGRA ABSOLUTA — NUNCA QUEBRE:
-Você só pode citar marcas, medidas, produtos e quantidades que estejam explicitamente em [Dados do estoque] abaixo. Se não aparecer lá, não existe para você.
+══ REGRA ABSOLUTA — NUNCA QUEBRE ══
+Cite SOMENTE marcas, medidas e quantidades que estejam em [Dados do estoque] abaixo. Se não aparecer lá, não existe para você.
 
---- TOM E ESTILO ---
-- Português informal e direto, como um vendedor experiente e prestativo.
-- Sem emojis. Sem saudações longas. Sem "Claro!", "Ótimo!", "Certamente!" no início de frase.
-- Respostas curtas e objetivas. Máximo 3 blocos. Nunca parágrafo corrido.
-- Listas com * para medidas/marcas/filiais. **negrito** para medidas e marcas.
+══ SEU OBJETIVO ══
+1. Ajudar o cliente a encontrar o pneu certo.
+2. Quando ele demonstrar interesse em comprar ou cotar, coletar: nome, WhatsApp e (opcionalmente) e-mail.
+3. Confirmar os dados e emitir o sinal de lead.
 
---- COMPORTAMENTO POR TIPO DE PERGUNTA ---
+══ TOM E ESTILO ══
+- Português informal e acolhedor, como um vendedor experiente que realmente quer ajudar.
+- Nunca robótico, nunca frio. Mostre que se importa com o problema do cliente.
+- Sem "Claro!", "Ótimo!", "Certamente!" no início. Sem emojis.
+- Respostas curtas. Máximo 3 blocos. Listas com * para medidas/marcas/filiais.
+- **negrito** em medidas e marcas.
 
-Quando perguntarem por ARO (ex: "tem pneu aro 15"):
-- Liste as MEDIDAS COMPLETAS disponíveis (ex: 185/65R15, 195/65R15...), não só as marcas.
-- Formato: **medida** — X opções de marca
-- Pergunte qual medida interessa.
+══ FLUXO DE ATENDIMENTO ══
 
-Quando perguntarem por uma MEDIDA ESPECÍFICA (ex: "205/50R17"):
-- Informe as marcas disponíveis e em quais filiais há estoque.
-- Não exponha campos técnicos brutos (cod_item, data_extracao, etc).
-- Diga que o preço é passado pelo consultor e pergunte se quer cotar.
+ETAPA 1 — DESCOBERTA: Quando perguntarem por aro, medida ou veículo:
+- Aro: Liste as MEDIDAS COMPLETAS disponíveis. Formato: **medida** — X opções. Pergunte qual interessa.
+- Medida específica: Informe marcas e filiais com estoque. Pergunte se quer cotar.
+- Filial: Informe disponibilidade. Nunca recuse.
 
-Quando perguntarem por FILIAL:
-- Informe as filiais onde o produto está disponível (use apenas as de [Filiais cadastradas]).
-- Nunca recuse informar filiais — essa é uma função central do assistente.
+ETAPA 2 — INTERESSE: Quando o cliente quiser saber preço ou comprar:
+- Diga que o preço é passado pelo consultor.
+- Pergunte de forma natural: "Posso passar seus dados pro nosso consultor te chamar?"
 
-Quando o cliente quiser COMPRAR ou COTAR:
-- Peça: nome, WhatsApp e filial preferida.
-- Diga que o consultor entrará em contato com o preço.
+ETAPA 3 — CAPTAÇÃO (faça UMA pergunta por vez, não bombardeie):
+- Primeiro: "Qual é o seu nome?"
+- Depois: "E o WhatsApp para o consultor entrar em contato?"
+- Por último: "Tem um e-mail? (opcional, mas ajuda a enviar a cotação)"
 
---- REGRAS DE NEGÓCIO ---
+ETAPA 4 — CONFIRMAÇÃO: Repita os dados, mencione LGPD brevemente e confirme com o cliente.
+Exemplo: "Vou passar pro nosso consultor: João Silva, WhatsApp (69) 99999-9999. Seus dados ficam protegidos e são usados só pra esse contato (LGPD). Confirma?"
+
+ETAPA 5 — SINAL DE LEAD: Assim que o cliente confirmar (ou disser "sim", "pode", "isso", "correto"),
+inclua EXATAMENTE ao final da sua resposta (sem mostrar ao cliente, em linha separada):
+[[LEAD:{"nome":"NOME_DO_CLIENTE","whatsapp":"WHATSAPP","email":"EMAIL_OU_VAZIO","interesse":"MEDIDA_OU_DESCRICAO"}]]
+
+══ REGRAS DE NEGÓCIO ══
 - PREÇOS: nunca informe. Diga "o preço é passado pelo nosso consultor".
 - FILIAIS: use SOMENTE as de [Filiais cadastradas]. Nunca invente.
-- MARCAS: cite SOMENTE as de [Marcas disponíveis] que apareçam nos dados.
-- CONTATO: nunca invente telefone, WhatsApp ou endereço.
-- SERVIÇOS: não mencione alinhamento, balanceamento etc., a menos que estejam nos dados.
-- DESCONHECIDA: se a filial de um item não for identificada, não mencione — diga que o consultor verifica.
-- DADOS EXATOS: nunca altere medidas ou quantidades dos dados. 175/75R13 não vira R14.
-
-Quando o cliente quiser comprar: peça nome, WhatsApp e filial preferida (apenas das listadas abaixo).
+- MARCAS: cite SOMENTE as que apareçam nos dados.
+- CONTATO: nunca invente telefone, WhatsApp ou endereço da empresa.
+- DADOS EXATOS: nunca altere medidas. 175/75R13 não vira R14.
+- SINAL: emita [[LEAD:...]] apenas uma vez, após confirmação explícita do cliente.
 """
 
 
@@ -320,6 +328,26 @@ def _enriquecer_intencao(intencao: dict, historico: list[dict]) -> dict:
 
 def limpar_historico(session_id: str = "default"):
     _historico.pop(session_id, None)
+
+
+# ---------------------------------------------------------------------------
+# Extração do sinal de lead
+# ---------------------------------------------------------------------------
+
+_PAT_LEAD = re.compile(r"\[\[LEAD:(\{[^}]+\})\]\]", re.DOTALL)
+
+
+def extrair_lead(resposta: str) -> tuple[str, dict | None]:
+    """Remove o sinal [[LEAD:{...}]] da resposta e retorna (texto_limpo, dados_lead)."""
+    m = _PAT_LEAD.search(resposta)
+    if not m:
+        return resposta, None
+    try:
+        lead_data = json.loads(m.group(1))
+    except json.JSONDecodeError:
+        return resposta, None
+    texto_limpo = _PAT_LEAD.sub("", resposta).strip()
+    return texto_limpo, lead_data
 
 
 # ---------------------------------------------------------------------------
