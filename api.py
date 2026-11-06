@@ -136,6 +136,10 @@ def serve_frontend():
 def google_verify():
     return FileResponse(str(_STATIC / "googlee6ac8bdc728c6dbc.html"), media_type="text/html")
 
+@app.get("/BingSiteAuth.xml", include_in_schema=False)
+def bing_verify():
+    return FileResponse(str(_STATIC / "BingSiteAuth.xml"), media_type="application/xml")
+
 @app.get("/robots.txt", include_in_schema=False)
 def robots():
     return FileResponse(str(_STATIC / "robots.txt"), media_type="text/plain")
