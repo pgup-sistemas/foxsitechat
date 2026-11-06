@@ -189,6 +189,41 @@ def privacidade():
 def termos():
     return FileResponse(str(_STATIC / "termos.html"), media_type="text/html")
 
+# IndexNow key file (Bing/Yandex indexação instantânea)
+_INDEXNOW_KEY = os.environ.get("INDEXNOW_KEY", "foxpneus-indexnow-key")
+
+@app.get("/foxpneus-indexnow-key.txt", include_in_schema=False)
+def indexnow_key_file():
+    from fastapi.responses import PlainTextResponse
+    return PlainTextResponse(_INDEXNOW_KEY)
+
+@app.post("/admin/indexnow", include_in_schema=False)
+async def indexnow_submit(token: str = ""):
+    """Envia URLs para o Bing IndexNow após atualização de estoque."""
+    if token != os.environ.get("ADMIN_TOKEN", "foxadmin2024"):
+        raise HTTPException(status_code=403)
+    import urllib.request, json as _json
+    base = "https://catalogo.redefox.com.br"
+    urls = [base + "/", base + "/sitemap.xml"]
+    payload = {
+        "host": "catalogo.redefox.com.br",
+        "key": _INDEXNOW_KEY,
+        "keyLocation": f"{base}/{_INDEXNOW_KEY}.txt",
+        "urlList": urls
+    }
+    req = urllib.request.Request(
+        "https://api.indexnow.org/indexnow",
+        data=_json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json; charset=utf-8"},
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as r:
+            status = r.status
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+    return {"ok": True, "bing_status": status, "urls": len(urls)}
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -1020,6 +1055,27 @@ async def upload_banco(token: str = Query(...), file: UploadFile = File(...)):
     dest.parent.mkdir(parents=True, exist_ok=True)
     conteudo = await file.read()
     dest.write_bytes(conteudo)
+    # Notifica Bing IndexNow em background (não bloqueia resposta)
+    def _ping_indexnow():
+        try:
+            import urllib.request, json as _json
+            payload = {
+                "host": "catalogo.redefox.com.br",
+                "key": _INDEXNOW_KEY,
+                "keyLocation": f"https://catalogo.redefox.com.br/{_INDEXNOW_KEY}.txt",
+                "urlList": ["https://catalogo.redefox.com.br/", "https://catalogo.redefox.com.br/sitemap.xml"]
+            }
+            req = urllib.request.Request(
+                "https://api.indexnow.org/indexnow",
+                data=_json.dumps(payload).encode(),
+                headers={"Content-Type": "application/json; charset=utf-8"},
+                method="POST"
+            )
+            urllib.request.urlopen(req, timeout=8)
+        except Exception:
+            pass
+    import threading as _th
+    _th.Thread(target=_ping_indexnow, daemon=True).start()
     return {"ok": True, "tamanho_bytes": len(conteudo), "caminho": str(dest)}
 
 

@@ -14,6 +14,10 @@
 <meta name="geo.region" content="BR-RO, BR-AM, BR-AC">
 <meta name="geo.placename" content="Porto Velho, Ji-Paraná, Ariquemes, Cacoal, Vilhena, Manaus, Parintins, Xapuri">
 <link rel="canonical" href="https://catalogo.redefox.com.br/">
+<!-- Google Search Console — substituir pelo código real após verificar propriedade -->
+<!-- <meta name="google-site-verification" content="COLE_AQUI_O_CODIGO_GSC"> -->
+<!-- Bing Webmaster Tools -->
+<!-- <meta name="msvalidate.01" content="COLE_AQUI_O_CODIGO_BING"> -->
 
 <!-- ── Open Graph (Facebook / WhatsApp / LinkedIn) ── -->
 <meta property="og:type" content="website">
@@ -22,17 +26,17 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:title" content="Fox Pneus — Pneus em Porto Velho, Manaus, Ji-Paraná e mais 5 cidades">
 <meta property="og:description" content="Maior rede de pneus de RO, AM e AC. Estoque em tempo real, 8 filiais, cotação pelo WhatsApp. Porto Velho · Manaus · Ji-Paraná · Ariquemes · Cacoal · Vilhena · Parintins · Xapuri.">
-<meta property="og:image" content="https://catalogo.redefox.com.br/static/og-image.svg">
-<meta property="og:image:type" content="image/svg+xml">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image" content="https://catalogo.redefox.com.br/static/redefox_logo.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="1024">
 <meta property="og:image:alt" content="Fox Pneus — Catálogo Digital de Pneus. 8 filiais em RO, AM e AC.">
 
 <!-- ── Twitter Card ── -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Fox Pneus — Catálogo Digital de Pneus">
 <meta name="twitter:description" content="Estoque em tempo real em 8 filiais no Norte do Brasil. Busque por medida ou veículo e peça cotação pelo WhatsApp.">
-<meta name="twitter:image" content="https://catalogo.redefox.com.br/static/og-image.svg">
+<meta name="twitter:image" content="https://catalogo.redefox.com.br/static/redefox_logo.png">
 <meta name="twitter:image:alt" content="Fox Pneus — Catálogo Digital de Pneus">
 
 <!-- ── Schema.org JSON-LD ── -->
@@ -56,7 +60,12 @@
         {"@type":"State","name":"Amazonas","identifier":"BR-AM"},
         {"@type":"State","name":"Acre","identifier":"BR-AC"}
       ],
-      "sameAs": ["https://www.redefox.com.br/"]
+      "sameAs": [
+        "https://www.redefox.com.br/",
+        "https://www.facebook.com/redefox",
+        "https://www.instagram.com/redefox",
+        "https://maps.google.com/?q=Fox+Pneus+Porto+Velho+RO"
+      ]
     },
     {
       "@type": "WebSite",
@@ -148,6 +157,51 @@
       "parentOrganization": {"@id":"https://catalogo.redefox.com.br/#organization"}
     },
     {
+      "@type": "AutoPartsStore",
+      "@id": "https://catalogo.redefox.com.br/#store-vilhena",
+      "name": "Fox Pneus Vilhena",
+      "url": "https://catalogo.redefox.com.br/",
+      "priceRange": "$$",
+      "openingHoursSpecification": [
+        {"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"08:00","closes":"18:00"},
+        {"@type":"OpeningHoursSpecification","dayOfWeek":["Saturday"],"opens":"08:00","closes":"13:00"}
+      ],
+      "address": {"@type":"PostalAddress","addressLocality":"Vilhena","addressRegion":"RO","addressCountry":"BR"},
+      "geo": {"@type":"GeoCoordinates","latitude":-12.7406,"longitude":-60.1458},
+      "hasMap": "https://maps.google.com/?q=Fox+Pneus+Vilhena+RO",
+      "parentOrganization": {"@id":"https://catalogo.redefox.com.br/#organization"}
+    },
+    {
+      "@type": "AutoPartsStore",
+      "@id": "https://catalogo.redefox.com.br/#store-parintins",
+      "name": "Fox Pneus Parintins",
+      "url": "https://catalogo.redefox.com.br/",
+      "priceRange": "$$",
+      "openingHoursSpecification": [
+        {"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"08:00","closes":"18:00"},
+        {"@type":"OpeningHoursSpecification","dayOfWeek":["Saturday"],"opens":"08:00","closes":"13:00"}
+      ],
+      "address": {"@type":"PostalAddress","addressLocality":"Parintins","addressRegion":"AM","addressCountry":"BR"},
+      "geo": {"@type":"GeoCoordinates","latitude":-2.6279,"longitude":-56.7355},
+      "hasMap": "https://maps.google.com/?q=Fox+Pneus+Parintins+AM",
+      "parentOrganization": {"@id":"https://catalogo.redefox.com.br/#organization"}
+    },
+    {
+      "@type": "AutoPartsStore",
+      "@id": "https://catalogo.redefox.com.br/#store-xapuri",
+      "name": "Fox Pneus Xapuri",
+      "url": "https://catalogo.redefox.com.br/",
+      "priceRange": "$$",
+      "openingHoursSpecification": [
+        {"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"08:00","closes":"18:00"},
+        {"@type":"OpeningHoursSpecification","dayOfWeek":["Saturday"],"opens":"08:00","closes":"13:00"}
+      ],
+      "address": {"@type":"PostalAddress","addressLocality":"Xapuri","addressRegion":"AC","addressCountry":"BR"},
+      "geo": {"@type":"GeoCoordinates","latitude":-10.6511,"longitude":-68.5020},
+      "hasMap": "https://maps.google.com/?q=Fox+Pneus+Xapuri+AC",
+      "parentOrganization": {"@id":"https://catalogo.redefox.com.br/#organization"}
+    },
+    {
       "@type": "FAQPage",
       "@id": "https://catalogo.redefox.com.br/#faq",
       "mainEntity": [
@@ -180,6 +234,31 @@
           "@type": "Question",
           "name": "Fox Pneus tem pneus para tratores e máquinas agrícolas?",
           "acceptedAnswer": {"@type":"Answer","text":"Sim! A Fox Pneus trabalha com pneus agrícolas para tratores, colheitadeiras e implementos. Consulte disponibilidade na filial mais próxima pelo catálogo digital."}
+        },
+        {
+          "@type": "Question",
+          "name": "Qual a medida de pneu para Toyota Hilux?",
+          "acceptedAnswer": {"@type":"Answer","text":"A Toyota Hilux usa principalmente pneus 265/65R17 nas versões mais comuns e 265/70R16 em versões mais antigas. A Fox Pneus tem estoque dessas medidas em todas as filiais de RO, AM e AC."}
+        },
+        {
+          "@type": "Question",
+          "name": "Fox Pneus tem filial em Ariquemes RO?",
+          "acceptedAnswer": {"@type":"Answer","text":"Sim! A Fox Pneus tem filial em Ariquemes (Rondônia) com estoque completo de pneus para carros, pickups, SUVs e caminhões. Acesse o catálogo digital para ver disponibilidade em tempo real."}
+        },
+        {
+          "@type": "Question",
+          "name": "Pneu 205/55R16 tem em estoque em Porto Velho?",
+          "acceptedAnswer": {"@type":"Answer","text":"Sim! A medida 205/55R16 é uma das mais populares e costuma ter boa disponibilidade nas filiais Fox Pneus de Porto Velho. Consulte em tempo real no catálogo digital ou ligue para confirmar estoque."}
+        },
+        {
+          "@type": "Question",
+          "name": "Fox Pneus tem pneus para frota de caminhões em RO?",
+          "acceptedAnswer": {"@type":"Answer","text":"Sim, a Fox Pneus atende frotas de caminhões em Rondônia, Amazonas e Acre. Trabalhamos com medidas rodoviárias, mistas e lisas para caminhões leves, semipesados e pesados das marcas Bridgestone, Michelin, Firestone, Vipal, Dunlop, Goodyear e outras. Solicite cotação de frota pelo WhatsApp."}
+        },
+        {
+          "@type": "Question",
+          "name": "Fox Pneus fica em Cacoal RO?",
+          "acceptedAnswer": {"@type":"Answer","text":"Sim! A Fox Pneus possui filial em Cacoal (Rondônia) com atendimento de segunda a sexta das 08h às 18h e sábados das 08h às 13h. Busque pneus disponíveis em Cacoal pelo catálogo digital."}
         }
       ]
     },
@@ -520,6 +599,29 @@ h1 em{font-style:normal;color:var(--red)}
 .succ p{font-size:13px;color:var(--fg2);margin:0 0 14px}
 @media(prefers-reduced-motion:reduce){.spin,.dot,.fab-pulse,.fab-pulse2{animation:none}.card{transition:none}}
 </style>
+
+<!-- Fallback para bots sem JS — garante indexação do conteúdo essencial -->
+<noscript>
+<div style="max-width:800px;margin:40px auto;padding:0 20px;font-family:sans-serif;color:#333">
+  <h1>Fox Pneus — Catálogo de Pneus em Rondônia, Amazonas e Acre</h1>
+  <p>Maior rede de pneus do Norte do Brasil. 8 filiais em Porto Velho, Manaus, Ji-Paraná, Ariquemes, Cacoal, Vilhena, Parintins e Xapuri.</p>
+  <p>Busque pneus por medida (185/65R15, 205/55R16, 265/65R17, 295/80R22.5 e centenas de outras) ou pelo modelo do veículo. Estoque atualizado diariamente.</p>
+  <h2>Nossas Filiais</h2>
+  <ul>
+    <li><strong>Porto Velho – RO</strong> (Matriz)</li>
+    <li><strong>Manaus – AM</strong></li>
+    <li><strong>Ji-Paraná – RO</strong></li>
+    <li><strong>Ariquemes – RO</strong></li>
+    <li><strong>Cacoal – RO</strong></li>
+    <li><strong>Vilhena – RO</strong></li>
+    <li><strong>Parintins – AM</strong></li>
+    <li><strong>Xapuri – AC</strong></li>
+  </ul>
+  <h2>Marcas disponíveis</h2>
+  <p>Bridgestone, Michelin, Firestone, Goodyear, Dunlop, Continental, Pirelli, Vipal, Triangle, Linglong, Leao, Sailun e muitas outras.</p>
+  <p>Para cotação e atendimento: <a href="https://wa.me/5569992323013">WhatsApp (69) 99232-3013</a></p>
+</div>
+</noscript>
 
 <div x-data="foxApp()" x-init="init()">
 
