@@ -292,8 +292,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Inter:wght@400;500;600&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Inter:wght@400;500;600&display=optional"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Inter:wght@400;500;600&display=optional">
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.5/cdn.min.js" as="script">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.5/cdn.min.js" defer></script>
 </head>
@@ -503,11 +502,13 @@ h1 em{font-style:normal;color:var(--red)}
 .fab-pulse{
   position:absolute;inset:0;border-radius:50%;
   background:var(--red);opacity:.5;
+  will-change:transform,opacity;
   animation:fab-pulse 2.2s ease-out infinite
 }
 .fab-pulse2{
   position:absolute;inset:0;border-radius:50%;
   background:var(--red);opacity:.35;
+  will-change:transform,opacity;
   animation:fab-pulse 2.2s ease-out .7s infinite
 }
 .fab{
@@ -1150,10 +1151,17 @@ function foxApp() {
       try {
         const rs = await fetch(`${API}/api/status`);
         const ds = await rs.json();
-        const rm = await fetch(`${API}/medidas`);
-        const dm = await rm.json();
-        this.stats = { produtos: ds.produtos || 0, medidas: Array.isArray(dm) ? dm.length : (dm.medidas ? dm.medidas.length : 0) };
+        this.stats = { produtos: ds.produtos || 0, medidas: 0 };
       } catch {}
+
+      // /medidas só para o contador — carrega sem bloquear o caminho crítico
+      ;(window.requestIdleCallback || (fn => setTimeout(fn, 1000)))(async () => {
+        try {
+          const rm = await fetch(`${API}/medidas`);
+          const dm = await rm.json();
+          this.stats.medidas = Array.isArray(dm) ? dm.length : (dm.medidas ? dm.medidas.length : 0);
+        } catch {}
+      }, { timeout: 8000 });
 
       try {
         const r = await fetch(`${API}/chat/status`);
