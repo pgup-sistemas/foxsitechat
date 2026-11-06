@@ -242,7 +242,7 @@ def _whatsapp_link(telefone: str, mensagem: str) -> str:
 @app.get("/api/status", tags=["Sistema"])
 def health():
     conn = _conn()
-    n_prod = conn.execute("SELECT COUNT(*) FROM produto").fetchone()[0]
+    n_prod = conn.execute("SELECT COUNT(*) FROM produto WHERE ativo=1").fetchone()[0]
     n_est  = conn.execute("SELECT COUNT(*) FROM estoque").fetchone()[0]
     ultima = conn.execute("SELECT MAX(data_extracao) FROM extracao_log").fetchone()[0]
     conn.close()
@@ -260,7 +260,7 @@ def _count_produtos():
 
 def _count_medidas():
     try:
-        conn = _conn(); n = conn.execute("SELECT COUNT(DISTINCT medida) FROM produto").fetchone()[0]; conn.close(); return n
+        conn = _conn(); n = conn.execute("SELECT COUNT(DISTINCT medida) FROM produto WHERE ativo=1").fetchone()[0]; conn.close(); return n
     except: return 0
 
 
@@ -973,7 +973,7 @@ def recarregar_estoque(token: str = Query(..., description="Token de autorizaç�
         raise HTTPException(403, "Token inválido")
     carregar_tudo()
     conn = _conn()
-    n = conn.execute("SELECT COUNT(*) FROM produto").fetchone()[0]
+    n = conn.execute("SELECT COUNT(*) FROM produto WHERE ativo=1").fetchone()[0]
     ultima = conn.execute("SELECT MAX(data_extracao) FROM extracao_log").fetchone()[0]
     conn.close()
     return {"status": "ok", "produtos": n, "ultima_extracao": ultima}
