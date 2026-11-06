@@ -154,6 +154,42 @@ DADOS = [
     ("TOYOTA", "BANDEIRANTE",       1990, 2001, ["7.50R16", "205R16"], "todos"),
     ("FORD", "F250",                2000, None, ["245/75R16", "265/70R17"], "todos"),
     ("CHEVROLET", "D20",            1985, 1997, ["7.50R16", "7.00R16"], "todos"),
+
+    # ── CAMINHÕES PESADOS (truck 22.5) ───────────────────────────────
+    ("VOLVO", "FH",                 2000, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("VOLVO", "FM",                 2000, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("VOLVO", "FMX",                2010, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("SCANIA", "R",                 2000, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("SCANIA", "S",                 2016, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("SCANIA", "G",                 2000, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("SCANIA", "P",                 2000, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("MERCEDES-BENZ", "ACTROS",     2000, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("MERCEDES-BENZ", "AXOR",       2002, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("MERCEDES-BENZ", "ATEGO",      2000, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("IVECO", "STRALIS",            2003, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("IVECO", "TRAKKER",            2004, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("MAN", "TGX",                  2008, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("MAN", "TGS",                  2008, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("DAF", "XF",                   2002, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+
+    # ── CAMINHÕES MÉDIOS (aro 20 / convencionais) ────────────────────
+    ("VOLKSWAGEN", "CONSTELLATION", 2005, None, ["295/80R22.5", "1000R20", "1000-20"], "todos"),
+    ("VOLKSWAGEN", "WORKER",        2000, 2013, ["1000R20", "1000-20"], "todos"),
+    ("VOLKSWAGEN", "DELIVERY",      2007, None, ["215/75R17.5", "225/75R17.5"], "todos"),
+    ("FORD", "CARGO",               2000, None, ["295/80R22.5", "1000R20", "1000-20"], "todos"),
+    ("MERCEDES-BENZ", "OF 1519",    2000, None, ["275/80R22.5", "295/80R22.5"], "todos"),
+    ("MERCEDES-BENZ", "OF 1721",    2000, None, ["275/80R22.5", "295/80R22.5"], "todos"),
+    ("IVECO", "EUROCARGO",          2000, None, ["275/80R22.5", "295/80R22.5"], "todos"),
+
+    # ── ÔNIBUS ───────────────────────────────────────────────────────
+    ("MARCOPOLO", "PARADISO",       2000, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("MARCOPOLO", "VIAGGIO",        2000, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("BUSSCAR", "EL BUS",          2000, None, ["295/80R22.5", "275/80R22.5"], "todos"),
+    ("CAIO", "APACHE",              2000, None, ["275/80R22.5", "295/80R22.5"], "todos"),
+
+    # ── TRATORES / CONSTRUÇÃO (aro 20 convencional) ──────────────────
+    ("MASSEY FERGUSON", "MF 290",   1990, None, ["1100R20", "1100-20"], "todos"),
+    ("NEW HOLLAND", "TL 75",        2000, None, ["1100R20", "1100-20"], "todos"),
 ]
 
 

@@ -159,6 +159,30 @@ VEICULOS_BASE = {
     ("fastback", None):       ["215/50R17", "225/45R18"],
     ("territory", None):      ["225/55R18", "235/55R18"],
     ("f250", None):           ["245/75R16", "265/70R17"],
+    # Caminhões pesados (22.5)
+    ("volvo fh", None):       ["295/80R22.5", "275/80R22.5"],
+    ("volvo fm", None):       ["295/80R22.5", "275/80R22.5"],
+    ("volvo fmx", None):      ["295/80R22.5", "275/80R22.5"],
+    ("scania r", None):       ["295/80R22.5", "275/80R22.5"],
+    ("scania s", None):       ["295/80R22.5", "275/80R22.5"],
+    ("scania g", None):       ["295/80R22.5", "275/80R22.5"],
+    ("scania p", None):       ["295/80R22.5", "275/80R22.5"],
+    ("actros", None):         ["295/80R22.5", "275/80R22.5"],
+    ("axor", None):           ["295/80R22.5", "275/80R22.5"],
+    ("atego", None):          ["295/80R22.5", "275/80R22.5"],
+    ("stralis", None):        ["295/80R22.5", "275/80R22.5"],
+    ("trakker", None):        ["295/80R22.5", "275/80R22.5"],
+    ("tgx", None):            ["295/80R22.5", "275/80R22.5"],
+    ("tgs", None):            ["295/80R22.5", "275/80R22.5"],
+    ("daf xf", None):         ["295/80R22.5", "275/80R22.5"],
+    ("constellation", None):  ["295/80R22.5", "1000R20"],
+    ("ford cargo", None):     ["295/80R22.5", "1000R20"],
+    ("cargo", None):          ["295/80R22.5", "1000R20"],
+    ("worker", None):         ["1000R20", "1000-20"],
+    ("delivery", None):       ["215/75R17.5", "225/75R17.5"],
+    ("eurocargo", None):      ["275/80R22.5", "295/80R22.5"],
+    ("paradiso", None):       ["295/80R22.5", "275/80R22.5"],
+    ("viaggio", None):        ["295/80R22.5", "275/80R22.5"],
     # Elétricos / híbridos
     ("dolphin", None):        ["195/55R16", "205/50R17"],
     ("seal", None):           ["235/45R18", "245/40R19"],
@@ -244,11 +268,12 @@ def classificar_intencao(pergunta: str) -> dict:
     elif any(t in texto for t in ["empilhadeira", "industrial", "retro"]):
         categoria = "industrial"
 
-    # Extrai veículo
+    # Extrai veículo — ordena por tamanho decrescente para evitar match parcial
+    # (ex: "ford cargo" não deve casar antes de "cargo", mas "scania r" antes de "scania")
     veiculo = None
-    for (nome_v, _), _ in VEICULOS_BASE.items():
-        if nome_v in texto:
-            veiculo = nome_v
+    for nome_v in sorted(VEICULOS_BASE.keys(), key=lambda k: -len(k[0])):
+        if nome_v[0] in texto:
+            veiculo = nome_v[0]
             break
 
     # Classifica intenção
@@ -424,8 +449,15 @@ def gerar_contexto_sql(intencao: dict, conn: sqlite3.Connection) -> dict:
             linhas = []
             for m, mlist in disponibilidade.items():
                 if mlist:
-                    marcas_str = ", ".join(r["marca"] for r in mlist if r["marca"])
-                    linhas.append(f"{m} (disponível: {marcas_str})")
+                    marcas_com_nome = [r["marca"] for r in mlist if r["marca"]]
+                    qtd_sem_marca = sum(r["qtd"] for r in mlist if not r["marca"])
+                    if marcas_com_nome:
+                        marcas_str = ", ".join(marcas_com_nome)
+                        if qtd_sem_marca:
+                            marcas_str += f" + {int(qtd_sem_marca):,} un (marca a confirmar)"
+                        linhas.append(f"{m} (disponível: {marcas_str})")
+                    else:
+                        linhas.append(f"{m} (disponível — {int(qtd_sem_marca):,} unidades, marca a confirmar com consultor)")
                 else:
                     linhas.append(f"{m} (sem estoque no momento)")
 
