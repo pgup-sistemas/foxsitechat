@@ -104,7 +104,7 @@ _TRUCK_BRAND_PATTERNS = [
 ]
 
 import re as _re
-_truck_patterns_compiled = [(re.compile(p, re.IGNORECASE), m) for p, m in _TRUCK_BRAND_PATTERNS]
+_truck_patterns_compiled = [(_re.compile(p, _re.IGNORECASE), m) for p, m in _TRUCK_BRAND_PATTERNS]
 
 def _inferir_marca_truck(nome: str) -> str | None:
     """Infere a marca de pneu truck a partir do código no nome do produto."""
