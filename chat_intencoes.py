@@ -208,6 +208,8 @@ MARCAS = {
     "firestone", "hankook", "yokohama", "toyo", "kumho", "nexen", "falken",
     "xbri", "sunset", "rotalla", "linglong", "routeway", "crosswind",
     "anteo", "marte", "centauro", "magnum", "durable",
+    # marcas truck
+    "sailun", "forza", "triangle", "leao", "double road", "vipal",
 }
 
 
