@@ -1,5 +1,5 @@
 # Fox Pneus — robots.txt
-# https://foxsitechat.onrender.com/
+# https://foxpneus.onrender.com/
 
 User-agent: *
 Allow: /
@@ -21,4 +21,4 @@ User-agent: MJ12bot
 Crawl-delay: 30
 
 # Sitemaps
-Sitemap: https://foxsitechat.onrender.com/sitemap.xml
+Sitemap: https://foxpneus.onrender.com/sitemap.xml
