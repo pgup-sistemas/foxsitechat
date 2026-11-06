@@ -821,7 +821,7 @@ h1 em{font-style:normal;color:var(--red)}
 
 
 <div class="rw" id="resultados-section" style="min-height:200px">
-  <div class="filters" x-show="resultados.length||loading">
+  <div class="filters" x-show="resultados.length||loading" x-cloak>
     <span class="flbl">Categoria</span>
     <template x-for="c in categorias" :key="c.val">
       <button class="chip" :class="{on:filtros.categoria===c.val}" @click="toggleCategoria(c.val)" x-text="c.label"></button>
@@ -831,13 +831,13 @@ h1 em{font-style:normal;color:var(--red)}
     <button class="chip" :class="{on:filtros.banda==='liso'}" @click="toggleBanda('liso')">Liso</button>
   </div>
 
-  <div class="rh" x-show="resultadosFiltrados.length&&!loading">
+  <div class="rh" x-show="resultadosFiltrados.length&&!loading" x-cloak>
     <span class="rcount" x-text="resultadosFiltrados.length+' produto'+(resultadosFiltrados.length!==1?'s':'')"></span>
     <span class="rdesc" x-text="buscaDesc"></span>
   </div>
 
-  <div class="st" x-show="loading"><div class="spin"></div><div class="st-sub">Buscando no estoque...</div></div>
-  <div class="st" x-show="!loading&&pesquisado&&resultadosFiltrados.length===0">
+  <div class="st" x-show="loading" x-cloak><div class="spin"></div><div class="st-sub">Buscando no estoque...</div></div>
+  <div class="st" x-show="!loading&&pesquisado&&resultadosFiltrados.length===0" x-cloak>
     <div class="st-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
     <div class="st-ttl">Nenhum resultado</div>
     <div class="st-sub">Tente outra medida ou fale com nosso assistente.</div>
@@ -849,7 +849,7 @@ h1 em{font-style:normal;color:var(--red)}
     <div class="st-sub">Digite a medida (ex: 185/65R15) ou o veículo acima.</div>
   </div>
 
-  <div class="grid" x-show="!loading&&resultadosFiltrados.length">
+  <div class="grid" x-show="!loading&&resultadosFiltrados.length" x-cloak>
     <template x-for="p in resultadosFiltrados" :key="p.cod_item">
       <div class="card">
         <div class="cimg">
