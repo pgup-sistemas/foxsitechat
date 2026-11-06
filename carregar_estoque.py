@@ -106,6 +106,11 @@ _TRUCK_BRAND_PATTERNS = [
 import re as _re
 _truck_patterns_compiled = [(_re.compile(p, _re.IGNORECASE), m) for p, m in _TRUCK_BRAND_PATTERNS]
 
+_MARCA_NORM = {
+    "LING LONG": "LINGLONG",
+}
+
+
 def _inferir_marca_truck(nome: str) -> str | None:
     """Infere a marca de pneu truck a partir do código no nome do produto."""
     for pat, marca in _truck_patterns_compiled:
@@ -171,6 +176,7 @@ def carregar_csv_estoque(caminho: Path, conn, filial_fixo: str = None):
             marca = (_coluna(row, "Marca", "marca") or "").strip()
             if not marca:
                 marca = _inferir_marca_truck(nome) or ""
+            marca = _MARCA_NORM.get(marca.upper(), marca)
             filial = (
                 filial_padrao
                 or (_coluna(row, "Nome Estabelecimento", "filial", "Estab") or "").strip()

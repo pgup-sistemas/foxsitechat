@@ -84,6 +84,18 @@ app = FastAPI(
 
 
 @app.on_event("startup")
+def _normalizar_marcas():
+    """Normaliza variantes de marca já gravadas no banco."""
+    try:
+        conn = get_conn(DB_PATH)
+        conn.execute("UPDATE produto SET marca='LINGLONG' WHERE marca='LING LONG'")
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+
+
+@app.on_event("startup")
 def _seed_compatibilidade():
     """Popula tabela de compatibilidade veículo→medida na primeira inicialização."""
     try:
