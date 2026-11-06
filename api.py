@@ -82,6 +82,20 @@ app = FastAPI(
     version="0.1.0",
 )
 
+
+@app.on_event("startup")
+def _seed_compatibilidade():
+    """Popula tabela de compatibilidade veículo→medida na primeira inicialização."""
+    try:
+        conn = get_conn(DB_PATH)
+        n = conn.execute("SELECT COUNT(*) FROM compatibilidade").fetchone()[0]
+        conn.close()
+        if n == 0:
+            from seed_compatibilidade import seed
+            seed()
+    except Exception:
+        pass
+
 _origins_raw = os.environ.get("FOX_ALLOWED_ORIGINS", "*")
 _allowed_origins = [o.strip() for o in _origins_raw.split(",") if o.strip()]
 
