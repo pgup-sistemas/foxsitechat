@@ -58,6 +58,62 @@ UF_POR_FILIAL = {
 }
 
 
+# Mapeamento de código de modelo → marca para pneus truck
+# O GoodData não exporta a coluna Marca para truck; a marca está no nome do produto.
+_TRUCK_BRAND_PATTERNS = [
+    # Bridgestone
+    (r"\b(R269|R289|R163S|R167E|R109|M749|M788)\b",        "BRIDGESTONE"),
+    # Firestone (FS = Steel, FD = Drive/Destination)
+    (r"\b(FS\d{3}|FD\d{3})\b",                             "FIRESTONE"),
+    # Michelin (M + 3 dígitos: M7xx, M8xx)
+    (r"\bM(7\d{2}|8\d{2})\b",                              "MICHELIN"),
+    # Dunlop (D + 3 dígitos: D3xx, D6xx, D7xx, D8xx, D9xx)
+    (r"\bD(3\d{2}|6\d{2}|7\d{2}|8\d{2}|9\d{2})[A-Z]?\b",  "DUNLOP"),
+    # Triangle (T + 3 dígitos)
+    (r"\bT(8\d{2}|7\d{2})\b",                              "TRIANGLE"),
+    # Linglong (L + 3 dígitos)
+    (r"\bL(\d{3})\b",                                       "LINGLONG"),
+    # Vipal (VI- ou RSVI-)
+    (r"\b(RSVI-\d+|VI-\d+)\b",                             "VIPAL"),
+    # Continental (HCS, HCR, HSC, etc.)
+    (r"\b(HCS|HCR|HSC|HSR|HSU)\b",                         "CONTINENTAL"),
+    # Goodyear (G + 3xx ou GL série)
+    (r"\b(GL\d{3}|G\d{3}[A-Z]?)\b",                        "GOODYEAR"),
+    # Triangle (TR + 2 dígitos, T2xx, T7xx, T8xx)
+    (r"\b(TR\d{2}|T[278]\d{2})\b",                         "TRIANGLE"),
+    # Vipal Robusto / Vittos (nomes por extenso)
+    (r"\bROBUSTO\b",                                        "VIPAL"),
+    # Firestone TRII / F.TRII
+    (r"\bF\.?TRII?\b",                                      "FIRESTONE"),
+    # Leao / LS série
+    (r"\bLS\d{3}\b",                                        "LEAO"),
+    # Sailun (SL série)
+    (r"\bSL\d{3}\b",                                        "SAILUN"),
+    # Forza
+    (r"\bFORZA\b",                                          "FORZA"),
+    # Double Road / DR série
+    (r"\bDR\d{3}\b",                                        "DOUBLE ROAD"),
+    # Tornado (Goodyear linha Tornado — código GL com TORNADO no nome)
+    (r"TORNADO",                                            "GOODYEAR"),
+    # GHD série (Hankook)
+    (r"\bGHD\d{2}\b",                                       "HANKOOK"),
+    # Formula G (Goodyear linha Cargo)
+    (r"\bFORMULA\s+G\b",                                    "GOODYEAR"),
+    # EasyMax D (Dunlop)
+    (r"\bEASYMAX\s+D\b",                                    "DUNLOP"),
+]
+
+import re as _re
+_truck_patterns_compiled = [(re.compile(p, re.IGNORECASE), m) for p, m in _TRUCK_BRAND_PATTERNS]
+
+def _inferir_marca_truck(nome: str) -> str | None:
+    """Infere a marca de pneu truck a partir do código no nome do produto."""
+    for pat, marca in _truck_patterns_compiled:
+        if pat.search(nome):
+            return marca
+    return None
+
+
 def _detectar_filial_e_data(caminho: Path):
     """Extrai filial e data a partir do nome do arquivo."""
     # ex: estoque_MATRIZ_20261023.csv → (MATRIZ, 2026-10-23)
@@ -113,6 +169,8 @@ def carregar_csv_estoque(caminho: Path, conn, filial_fixo: str = None):
             cod = (_coluna(row, "Cód Item", "cod_item", "Código") or "").strip()
             cod_fab = (_coluna(row, "Cód Fabricação", "cod_fabricacao") or "").strip()
             marca = (_coluna(row, "Marca", "marca") or "").strip()
+            if not marca:
+                marca = _inferir_marca_truck(nome) or ""
             filial = (
                 filial_padrao
                 or (_coluna(row, "Nome Estabelecimento", "filial", "Estab") or "").strip()
