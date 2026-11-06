@@ -307,9 +307,9 @@
   --surf:    #1a1a1a;
   --surf2:   #222;
   --bdr:     #2c2c2c;
-  --muted:   #5a5a5a;
+  --muted:   #767676;
   --fg:      #eeebe6;
-  --fg2:     #999;
+  --fg2:     #aaa;
   --red:     #f00026;
   --red-h:   #c8001f;
   --red-gl:  rgba(240,0,38,.15);
@@ -626,7 +626,7 @@ h1 em{font-style:normal;color:var(--red)}
 <div x-data="foxApp()" x-init="init()">
 
 <header>
-  <div class="logo"><img src="data:image/png;base64,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" alt="Fox Pneus" style="height:40px;display:block"></div>
+  <div class="logo"><img src="data:image/png;base64,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" alt="Fox Pneus" width="175" height="100" style="height:40px;width:auto;display:block"></div>
   <nav>
     <button class="nav-btn" :class="{active:tab==='medida'}" @click="tab='medida'">Medida</button>
     <button class="nav-btn" :class="{active:tab==='veiculo'}" @click="tab='veiculo'">Veículo</button>
@@ -675,6 +675,7 @@ h1 em{font-style:normal;color:var(--red)}
 }
 </style>
 
+<main>
 <div class="hero">
   <!-- Pneus decorativos de fundo -->
   <div class="hero-tires" aria-hidden="true">
@@ -756,9 +757,9 @@ h1 em{font-style:normal;color:var(--red)}
     </div>
     <div class="sbox" x-show="tab==='medida'">
       <div class="sf" style="flex:2 1 240px">
-        <label>Medida do pneu</label>
+        <label for="input-medida">Medida do pneu</label>
         <div style="position:relative">
-          <input type="text" placeholder="Ex: 185/65R15" x-model="busca.medida"
+          <input id="input-medida" type="text" placeholder="Ex: 185/65R15" x-model="busca.medida"
             @input="onMedidaInput" @keydown.enter="pesquisar"
             @keydown.down.prevent="acFocus=Math.min(acFocus+1,acSugestoes.length-1)"
             @keydown.up.prevent="acFocus=Math.max(acFocus-1,0)"
@@ -776,8 +777,8 @@ h1 em{font-style:normal;color:var(--red)}
         </div>
       </div>
       <div class="sf">
-        <label>Filial</label>
-        <select x-model="busca.filial">
+        <label for="select-filial-medida">Filial</label>
+        <select id="select-filial-medida" x-model="busca.filial">
           <option value="">Todas</option>
           <template x-for="f in filiais" :key="f.cod">
             <option :value="f.cod" x-text="f.nome_curto||f.cod"></option>
@@ -788,13 +789,13 @@ h1 em{font-style:normal;color:var(--red)}
     </div>
     <div class="sbox" x-show="tab==='veiculo'">
       <div class="sf">
-        <label>Veículo</label>
-        <input type="text" placeholder="Ex: Hilux, Gol, HB20..."
+        <label for="input-veiculo">Veículo</label>
+        <input id="input-veiculo" type="text" placeholder="Ex: Hilux, Gol, HB20..."
           x-model="busca.veiculo" @keydown.enter="pesquisarVeiculo" autocomplete="off">
       </div>
       <div class="sf">
-        <label>Filial</label>
-        <select x-model="busca.filial">
+        <label for="select-filial-veiculo">Filial</label>
+        <select id="select-filial-veiculo" x-model="busca.filial">
           <option value="">Todas</option>
           <template x-for="f in filiais" :key="f.cod">
             <option :value="f.cod" x-text="f.nome_curto||f.cod"></option>
@@ -807,7 +808,7 @@ h1 em{font-style:normal;color:var(--red)}
 </div>
 
 
-<div class="rw" id="resultados-section">
+<div class="rw" id="resultados-section" style="min-height:200px">
   <div class="filters" x-show="resultados.length||loading">
     <span class="flbl">Categoria</span>
     <template x-for="c in categorias" :key="c.val">
@@ -869,6 +870,7 @@ h1 em{font-style:normal;color:var(--red)}
     </template>
   </div>
 </div>
+</main>
 
 <!-- Modal -->
 <div class="ov" x-show="modalProduto" @click.self="modalProduto=null">
@@ -881,7 +883,7 @@ h1 em{font-style:normal;color:var(--red)}
             <div class="mnom" x-text="modalProduto.nome"></div>
             <div class="mmrc" x-text="(modalProduto.marca||'')+(modalProduto.tipo_banda?' · '+modalProduto.tipo_banda:'')"></div>
           </div>
-          <button class="mcl" @click="modalProduto=null"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          <button class="mcl" @click="modalProduto=null" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
         <div class="stl">Estoque por filial</div>
         <div x-show="modalLoading" style="text-align:center;padding:20px"><div class="spin" style="margin:0 auto"></div></div>
@@ -914,8 +916,8 @@ h1 em{font-style:normal;color:var(--red)}
             </div>
             <div class="fr">
               <div class="ff">
-                <label>Filial preferida</label>
-                <select x-model="cotacao.filial_id">
+                <label for="select-filial-cotacao">Filial preferida</label>
+                <select id="select-filial-cotacao" x-model="cotacao.filial_id">
                   <option value="">Qualquer filial</option>
                   <template x-for="f in filiais" :key="f.cod"><option :value="f.cod" x-text="f.nome_curto||f.cod"></option></template>
                 </select>
@@ -944,7 +946,7 @@ h1 em{font-style:normal;color:var(--red)}
      style="position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.75);backdrop-filter:blur(4px)"
      @click.self="leadModalAberto=false">
   <div style="background:#141414;border:1px solid #2c2c2c;border-radius:16px;width:100%;max-width:420px;padding:28px 24px;position:relative">
-    <button @click="leadModalAberto=false"
+    <button @click="leadModalAberto=false" aria-label="Fechar"
             style="position:absolute;top:14px;right:14px;background:none;border:none;color:#666;cursor:pointer;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;transition:background .2s" onmouseover="this.style.background='#222'" onmouseout="this.style.background='transparent'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:#fff;margin-bottom:4px">
       Receba <span style="color:#f00026">ofertas</span> em primeira mão
@@ -962,7 +964,8 @@ h1 em{font-style:normal;color:var(--red)}
         <input x-model="lead.telefone" type="tel" placeholder="WhatsApp"
                style="background:#1a1a1a;border:1px solid #2c2c2c;border-radius:8px;padding:10px 14px;color:#eee;font-size:14px;outline:none;width:100%;box-sizing:border-box"
                @focus="this.style.borderColor='#f00026'" @blur="this.style.borderColor='#2c2c2c'">
-        <select x-model="lead.cidade"
+        <label for="select-lead-cidade" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap">Sua cidade</label>
+        <select id="select-lead-cidade" x-model="lead.cidade"
                 style="background:#1a1a1a;border:1px solid #2c2c2c;border-radius:8px;padding:10px 14px;color:#eee;font-size:14px;outline:none;width:100%;box-sizing:border-box">
           <option value="">Sua cidade (opcional)</option>
           <option>Porto Velho</option><option>Ariquemes</option><option>Ji-Paraná</option>
@@ -1015,7 +1018,7 @@ h1 em{font-style:normal;color:var(--red)}
 <div class="fab-wrap">
   <div class="fab-pulse" x-show="!chatAberto"></div>
   <div class="fab-pulse2" x-show="!chatAberto"></div>
-  <button class="fab" @click="chatAberto=!chatAberto">
+  <button class="fab" @click="chatAberto=!chatAberto" :aria-label="chatAberto?'Fechar chat':'Abrir chat assistente'">
     <svg x-show="!chatAberto" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     <svg x-show="chatAberto" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
@@ -1031,7 +1034,7 @@ h1 em{font-style:normal;color:var(--red)}
         <span x-text="ollamaOk?'Groq AI · Online':'Sem IA configurada'"></span>
       </div>
     </div>
-    <button class="cx" @click="chatAberto=false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <button class="cx" @click="chatAberto=false" aria-label="Fechar chat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
   <div class="msgs" x-ref="msgContainer">
     <template x-for="m in chatMensagens" :key="m.id">
@@ -1045,7 +1048,7 @@ h1 em{font-style:normal;color:var(--red)}
     <textarea class="ci" x-ref="chatInput" x-model="chatTexto"
       @keydown.enter="if(!$event.shiftKey){$event.preventDefault();enviarChat()}"
       placeholder="Pergunte sobre medidas, filiais..." rows="1"></textarea>
-    <button class="csend" @click="enviarChat" :disabled="chatCarregando||!chatTexto.trim()">
+    <button class="csend" @click="enviarChat" :disabled="chatCarregando||!chatTexto.trim()" aria-label="Enviar mensagem">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
   </div>
@@ -1060,25 +1063,25 @@ h1 em{font-style:normal;color:var(--red)}
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   justify-content:center;
 ">
-  <span style="font-size:11px;color:#3a3a3a;letter-spacing:.3px">
+  <span style="font-size:11px;color:#767676;letter-spacing:.3px">
     Desenvolvido por
-    <span style="color:#444;font-weight:600">PageUp Sistemas</span>
+    <span style="color:#888;font-weight:600">PageUp Sistemas</span>
     &mdash;
-    <span style="color:#383838">Oézios Normando</span>
+    <span style="color:#767676">Oézios Normando</span>
   </span>
   <a href="https://wa.me/5569993882222" target="_blank" rel="noopener" title="WhatsApp PageUp Sistemas"
-     style="display:inline-flex;align-items:center;justify-content:center;color:#2d5c38;
+     style="display:inline-flex;align-items:center;justify-content:center;color:#22c55e;
             text-decoration:none;background:#0d1f10;border:1px solid #1a3320;
             border-radius:50%;width:24px;height:24px;transition:opacity .2s;flex-shrink:0"
      onmouseover="this.style.opacity='.6'" onmouseout="this.style.opacity='1'">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
   </a>
-  <span style="font-size:11px;color:#2a2a2a">&copy; <span id="footer-year"></span></span>
+  <span style="font-size:11px;color:#767676">&copy; <span id="footer-year"></span></span>
   <script>document.getElementById('footer-year').textContent=new Date().getFullYear()</script>
-  <span style="font-size:11px;color:#2a2a2a">·</span>
-  <a href="/privacidade" style="font-size:11px;color:#333;text-decoration:none" onmouseover="this.style.color='#e8b84b'" onmouseout="this.style.color='#333'">Privacidade</a>
-  <span style="font-size:11px;color:#2a2a2a">·</span>
-  <a href="/termos" style="font-size:11px;color:#333;text-decoration:none" onmouseover="this.style.color='#e8b84b'" onmouseout="this.style.color='#333'">Termos</a>
+  <span style="font-size:11px;color:#767676">·</span>
+  <a href="/privacidade" style="font-size:11px;color:#888;text-decoration:none" onmouseover="this.style.color='#e8b84b'" onmouseout="this.style.color='#888'">Privacidade</a>
+  <span style="font-size:11px;color:#767676">·</span>
+  <a href="/termos" style="font-size:11px;color:#888;text-decoration:none" onmouseover="this.style.color='#e8b84b'" onmouseout="this.style.color='#888'">Termos</a>
 </footer>
 
 <script>
