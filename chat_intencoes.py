@@ -79,23 +79,97 @@ ALIASES_FILIAL = {
 
 # Veículos comuns e suas medidas (base inicial — será expandida)
 VEICULOS_BASE = {
-    ("hilux", None):     ["265/65R17", "265/70R17", "255/70R15"],
-    ("ranger", None):    ["265/65R17", "265/70R16"],
-    ("s10", None):       ["265/65R17", "265/70R17"],
-    ("l200", None):      ["265/65R17", "245/65R17"],
-    ("amarok", None):    ["255/55R18", "235/65R17"],
-    ("duster", None):    ["215/65R16", "205/60R16"],
-    ("strada", None):    ["205/60R15", "205/65R15"],
-    ("saveiro", None):   ["185/75R15", "185/65R15"],
-    ("gol", None):       ["175/70R14", "175/65R14"],
-    ("hb20", None):      ["185/60R15", "175/65R14"],
-    ("uno", None):       ["175/70R13", "175/65R14"],
-    ("celta", None):     ["175/70R13"],
-    ("ka", None):        ["185/60R14", "175/65R14"],
-    ("civic", None):     ["205/55R16", "215/45R17"],
-    ("corolla", None):   ["205/55R16", "215/45R17"],
-    ("cruze", None):     ["215/50R17", "205/55R16"],
-    ("onix", None):      ["185/65R15", "175/65R14"],
+    ("hilux", None):          ["265/65R17", "265/70R17", "255/70R15"],
+    ("ranger", None):         ["265/65R17", "265/70R16"],
+    ("s10", None):            ["265/65R17", "265/70R17"],
+    ("l200", None):           ["265/65R17", "245/65R17"],
+    ("l200 triton", None):    ["265/65R17", "245/65R17"],
+    ("amarok", None):         ["255/55R18", "235/65R17"],
+    ("duster", None):         ["215/65R16", "205/60R16"],
+    ("strada", None):         ["205/60R15", "205/65R15"],
+    ("saveiro", None):        ["185/75R15", "185/65R15"],
+    ("gol", None):            ["175/70R14", "175/65R14"],
+    ("hb20", None):           ["185/60R15", "175/65R14"],
+    ("hb20s", None):          ["185/60R15", "175/65R14"],
+    ("uno", None):            ["175/70R13", "175/65R14"],
+    ("celta", None):          ["175/70R13"],
+    ("ka", None):             ["185/60R14", "175/65R14"],
+    ("civic", None):          ["205/55R16", "215/45R17"],
+    ("corolla", None):        ["205/55R16", "215/45R17"],
+    ("cruze", None):          ["215/50R17", "205/55R16"],
+    ("onix", None):           ["185/65R15", "175/65R14"],
+    ("onix plus", None):      ["195/55R16", "205/55R16"],
+    ("polo", None):           ["195/55R16", "205/55R16"],
+    ("virtus", None):         ["195/55R16", "205/55R16"],
+    ("t-cross", None):        ["195/60R16", "205/50R17"],
+    ("tiguan", None):         ["215/55R17", "225/45R18"],
+    ("voyage", None):         ["175/65R14", "185/60R14"],
+    ("fox", None):            ["175/70R13", "175/65R14"],
+    ("up", None):             ["175/65R14", "185/60R14"],
+    ("jetta", None):          ["205/55R16", "225/45R17"],
+    ("palio", None):          ["175/70R13", "175/65R14"],
+    ("siena", None):          ["175/70R13", "175/65R14"],
+    ("punto", None):          ["185/65R15", "195/55R15"],
+    ("argo", None):           ["175/65R14", "195/55R15"],
+    ("cronos", None):         ["185/65R15", "195/55R16"],
+    ("pulse", None):          ["195/60R16", "215/50R17"],
+    ("toro", None):           ["215/65R16", "225/50R18"],
+    ("tracker", None):        ["215/55R17", "225/50R17"],
+    ("spin", None):           ["195/65R15", "185/65R15"],
+    ("equinox", None):        ["225/55R18", "235/55R18"],
+    ("trailblazer", None):    ["265/65R17", "265/60R18"],
+    ("montana", None):        ["205/60R16", "215/55R17"],
+    ("creta", None):          ["205/60R16", "215/55R17"],
+    ("tucson", None):         ["215/60R17", "225/55R18"],
+    ("ix35", None):           ["215/60R17", "215/55R17"],
+    ("santa fe", None):       ["235/60R18", "235/55R19"],
+    ("yaris", None):          ["185/60R15", "195/50R16"],
+    ("sw4", None):            ["265/60R18", "265/65R17"],
+    ("rav4", None):           ["225/60R18", "235/55R18"],
+    ("camry", None):          ["215/55R17", "225/50R17"],
+    ("fit", None):            ["185/55R16", "195/55R16"],
+    ("hr-v", None):           ["215/55R17", "225/45R18"],
+    ("cr-v", None):           ["225/55R18", "235/55R18"],
+    ("wr-v", None):           ["195/60R16", "205/55R16"],
+    ("renegade", None):       ["215/55R17", "225/45R18"],
+    ("compass", None):        ["225/60R18", "235/55R18"],
+    ("commander", None):      ["225/60R18", "235/55R18"],
+    ("wrangler", None):       ["255/75R17", "265/70R17"],
+    ("ecosport", None):       ["195/65R15", "205/60R16"],
+    ("frontier", None):       ["265/60R18", "265/65R17"],
+    ("kicks", None):          ["205/60R16", "215/55R17"],
+    ("versa", None):          ["185/65R15", "195/55R16"],
+    ("march", None):          ["175/65R14", "185/60R14"],
+    ("sentra", None):         ["205/55R16", "215/50R17"],
+    ("pajero sport", None):   ["265/65R17", "265/60R18"],
+    ("outlander", None):      ["225/55R18", "235/55R18"],
+    ("asx", None):            ["215/60R17", "225/55R18"],
+    ("sandero", None):        ["175/65R14", "185/65R15"],
+    ("logan", None):          ["175/65R14", "185/65R15"],
+    ("kwid", None):           ["165/70R14", "175/60R15"],
+    ("captur", None):         ["205/60R16", "215/55R17"],
+    ("oroch", None):          ["215/65R16", "205/60R16"],
+    ("sportage", None):       ["215/60R17", "225/55R18"],
+    ("forester", None):       ["225/55R17", "225/60R17"],
+    ("outback", None):        ["225/55R18", "235/55R18"],
+    ("defender", None):       ["255/70R18", "265/65R18"],
+    ("discovery", None):      ["255/55R19", "255/50R20"],
+    ("doblo", None):          ["195/65R15", "205/60R16"],
+    ("ducato", None):         ["225/75R16", "215/75R16"],
+    ("fastback", None):       ["215/50R17", "225/45R18"],
+    ("territory", None):      ["225/55R18", "235/55R18"],
+    ("f250", None):           ["245/75R16", "265/70R17"],
+    # Elétricos / híbridos
+    ("dolphin", None):        ["195/55R16", "205/50R17"],
+    ("seal", None):           ["235/45R18", "245/40R19"],
+    ("atto 3", None):         ["215/55R18", "235/50R18"],
+    ("byd king", None):       ["245/50R20", "255/45R20"],
+    ("byd tan", None):        ["245/45R20", "255/40R21"],
+    ("ora 03", None):         ["195/55R16", "205/50R17"],
+    ("id.4", None):           ["235/50R20", "255/45R20"],
+    ("corolla cross", None):  ["215/55R17", "225/45R18"],
+    ("xc40 recharge", None):  ["235/50R19", "245/45R20"],
+    ("c40 recharge", None):   ["235/50R19", "245/45R20"],
 }
 
 # Padrão de medida de pneu (ex: 185/65R15, 175R14, ou "aro 14")
@@ -331,24 +405,31 @@ def gerar_contexto_sql(intencao: dict, conn: sqlite3.Connection) -> dict:
                     break
 
         if medidas_compat:
-            # Busca estoque para cada medida
+            # Busca estoque e marcas disponíveis para cada medida
             disponibilidade = {}
             for med in medidas_compat:
-                n = conn.execute("""
-                    SELECT COUNT(*) FROM produto p
+                rows_m = conn.execute("""
+                    SELECT p.marca, SUM(e.qtd) qtd
+                    FROM produto p
                     JOIN estoque e ON e.cod_item = p.cod_item
-                    WHERE p.medida = ? AND e.qtd > 0
-                """, [med]).fetchone()[0]
-                disponibilidade[med] = n
+                    WHERE p.medida = ? AND e.qtd > 0 AND p.ativo = 1
+                    GROUP BY p.marca ORDER BY qtd DESC
+                """, [med]).fetchall()
+                disponibilidade[med] = [{"marca": r["marca"], "qtd": r["qtd"]} for r in rows_m]
 
-            dados = [{"medida": m, "produtos_em_estoque": n} for m, n in disponibilidade.items()]
-            resumo = (
-                f"Para o {veiculo.upper()}, medidas compatíveis: "
-                + ", ".join(
-                    f"{m} ({'disponível' if n > 0 else 'sem estoque'})"
-                    for m, n in disponibilidade.items()
-                )
-            )
+            dados = [
+                {"medida": m, "marcas": mlist, "em_estoque": bool(mlist)}
+                for m, mlist in disponibilidade.items()
+            ]
+            linhas = []
+            for m, mlist in disponibilidade.items():
+                if mlist:
+                    marcas_str = ", ".join(r["marca"] for r in mlist if r["marca"])
+                    linhas.append(f"{m} (disponível: {marcas_str})")
+                else:
+                    linhas.append(f"{m} (sem estoque no momento)")
+
+            resumo = f"Para o {veiculo.upper()}, medidas OEM compatíveis: " + " | ".join(linhas)
         else:
             resumo = f"Veículo '{veiculo}' não encontrado na base de compatibilidade."
 
