@@ -132,7 +132,7 @@ def sitemap():
             SELECT DISTINCT p.medida
             FROM produto p
             JOIN estoque e ON e.cod_item = p.cod_item
-            WHERE e.qtd > 0 AND p.medida IS NOT NULL
+            WHERE e.qtd > 0 AND p.medida IS NOT NULL AND p.ativo = 1
               AND e.data_extracao = (SELECT MAX(data_extracao) FROM estoque)
             ORDER BY p.medida
             LIMIT 500
@@ -255,7 +255,7 @@ def health():
 
 def _count_produtos():
     try:
-        conn = _conn(); n = conn.execute("SELECT COUNT(*) FROM produto").fetchone()[0]; conn.close(); return n
+        conn = _conn(); n = conn.execute("SELECT COUNT(*) FROM produto WHERE ativo=1").fetchone()[0]; conn.close(); return n
     except: return 0
 
 def _count_medidas():
@@ -291,7 +291,7 @@ def listar_medidas(
 ):
     """Lista todas as medidas com estoque > 0. Com `busca`, retorna formato para autocomplete."""
     conn = _conn()
-    where = ["p.medida IS NOT NULL", "e.qtd > 0"]
+    where = ["p.medida IS NOT NULL", "e.qtd > 0", "p.ativo = 1"]
     params: list = []
 
     if categoria:
@@ -356,7 +356,7 @@ def buscar_produtos(
     Retorna lista com estoque atual por filial.
     """
     conn = _conn()
-    where = ["1=1"]
+    where = ["p.ativo = 1"]
     params: list = []
 
     if medida:

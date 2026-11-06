@@ -99,6 +99,12 @@ _PAT_IND_FORK = re.compile(
     re.IGNORECASE,
 )
 
+# 6d. Formato americano SUV/4x4 — 31X10.5R15, 33X12.5R18, 35X12.5R20
+_PAT_AMERICANO = re.compile(
+    r"(\d{2})X(\d{1,2}\.\d)R(\d{2})",
+    re.IGNORECASE,
+)
+
 # 7. Câmara — CAMARA 16, CAMARA 20, CAMARA ARO 18, CAMARA AR..., CAMARA DE AR..., CÂMARA...
 _PAT_CAMARA = re.compile(
     r"^C[AÂ]MARA(?:\s+(?:DE\s+)?AR(?:O)?)?\s+(?:FR[-\s])?(\d{1,2})(?!\.\d*[/-])",
@@ -425,6 +431,23 @@ def parse_item(nome: str) -> dict:
         _preencher_banda_modelo(resultado, nome_upper, medida)
         return resultado
 
+    # --- Formato americano SUV/4x4 (31X10.5R15, 33X12.5R18) --------------------
+    m = _PAT_AMERICANO.search(nome_upper)
+    if m:
+        altura, larg_s, aro_s = int(m.group(1)), m.group(2), float(m.group(3))
+        medida = f"{altura}X{larg_s}R{int(aro_s)}"
+        categoria = "suv" if aro_s <= 20 else "truck"
+        resultado.update({
+            "medida": medida,
+            "largura": altura,  # altura total em polegadas
+            "aro": aro_s,
+            "formato_medida": "americano",
+            "categoria": categoria,
+        })
+        _preencher_banda_modelo(resultado, nome_upper, medida)
+        _preencher_carga_vel(resultado, nome_upper)
+        return resultado
+
     # Não reconhecido
     resultado["categoria"] = "desconhecido"
     return resultado
@@ -542,6 +565,9 @@ CASOS_TESTE = [
     ("CAMARA 20 1000R20 V3-06-5",                        "ARO 20",     "camara",     None),
     ("PROTETOR 16 ECOBOR",                               "ARO 16",     "protetor",   None),
     ("PROTETOR 22 ECOBOR (PNEU 1100-22)",                "ARO 22",     "protetor",   None),
+    ("31X10.5R15 MISTO A/T+ X-TREK A/T 109S LT",        "31X10.5R15", "suv",        "misto"),
+    ("33X12.5R18 MISTO A/T+ BRUTUS T/A LT 10PR TL 118Q","33X12.5R18", "suv",        "misto"),
+    ("35X12.5R20 MUD FORZA M/T2 LT 6PR",                "35X12.5R20", "suv",        None),
 ]
 
 
