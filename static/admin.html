@@ -124,6 +124,9 @@ td.nome{color:var(--fg);font-weight:500}
     <button class="tab-btn" :class="{active:aba==='leads'}" @click="aba='leads'">
       Leads
     </button>
+    <button class="tab-btn" :class="{active:aba==='cotacoes'}" @click="aba='cotacoes';carregarCotacoes()">
+      Cotações
+    </button>
     <button class="tab-btn" :class="{active:aba==='analise'}" @click="aba='analise';carregarAnalytics()">
       Análise de Visitantes
     </button>
@@ -244,6 +247,103 @@ td.nome{color:var(--fg);font-weight:500}
   </div>
 
   </div><!-- /aba leads -->
+
+  <!-- ══ ABA COTAÇÕES ══ -->
+  <div x-show="aba==='cotacoes'">
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val" x-text="cotStats.total||0"></div>
+      <div class="stat-lbl">Total de cotações</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" x-text="cotStats.hoje||0"></div>
+      <div class="stat-lbl">Hoje</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" x-text="cotStats.comTel||0"></div>
+      <div class="stat-lbl">Com WhatsApp</div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input class="search-box" type="text" x-model="cotFiltro" placeholder="Buscar nome, medida, filial..."
+           @input="aplicarFiltCot()">
+    <select class="sel" x-model="cotFiltroOrigem" @change="aplicarFiltCot()">
+      <option value="">Todas as origens</option>
+      <option value="web">web</option>
+      <option value="chat_ia">chat IA</option>
+    </select>
+    <div style="flex:1"></div>
+    <button class="btn-outline" @click="exportarCotCSV()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exportar CSV
+    </button>
+    <button class="btn-outline" @click="carregarCotacoes()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      Atualizar
+    </button>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nome</th>
+          <th>WhatsApp</th>
+          <th>Medida</th>
+          <th>Veículo</th>
+          <th>Filial</th>
+          <th>Status</th>
+          <th>Origem</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr x-show="cotCarregando" class="loading-row">
+          <td colspan="9">Carregando...</td>
+        </tr>
+        <tr x-show="!cotCarregando && cotPagina.length===0">
+          <td colspan="9" class="empty">Nenhuma cotação encontrada.</td>
+        </tr>
+        <template x-for="c in cotPagina" :key="c.id">
+          <tr>
+            <td class="dt" x-text="c.id"></td>
+            <td class="nome" x-text="c.nome_cliente||'—'"></td>
+            <td>
+              <span x-show="c.telefone">
+                <a :href="'https://wa.me/55'+c.telefone.replace(/\D/g,'')" target="_blank"
+                   x-text="c.telefone" style="color:#4caf50"></a>
+              </span>
+              <span x-show="!c.telefone" style="color:#333">—</span>
+            </td>
+            <td style="color:var(--gold)" x-text="c.medida_buscada||'—'"></td>
+            <td class="dt" x-text="c.veiculo||'—'"></td>
+            <td class="dt" x-text="c.filial_interesse||'—'"></td>
+            <td>
+              <span class="chip" :class="c.status==='fechado'?'':c.status==='novo'?'off':''"
+                    x-text="c.status||'novo'"></span>
+            </td>
+            <td class="dt" x-text="c.origem||'web'"></td>
+            <td class="dt" x-text="formatDate(c.criado_em)"></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pgn" x-show="cotTotalPags > 1">
+    <button class="pgn-btn" @click="cotPag--" :disabled="cotPag===0" style="display:inline-flex;align-items:center;gap:5px">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Anterior
+    </button>
+    <span class="pgn-info" x-text="`Página ${cotPag+1} de ${cotTotalPags}`"></span>
+    <button class="pgn-btn" @click="cotPag++" :disabled="cotPag>=cotTotalPags-1" style="display:inline-flex;align-items:center;gap:5px">
+      Próxima <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+
+  </div><!-- /aba cotacoes -->
 
   <!-- ══ ABA ANÁLISE ══ -->
   <div x-show="aba==='analise'">
@@ -480,6 +580,21 @@ function adminApp() {
     anCarregando: false,
     anDias: '30',
 
+    // cotações
+    cotacoes: [],
+    cotFiltradas: [],
+    cotCarregando: false,
+    cotFiltro: '',
+    cotFiltroOrigem: '',
+    cotPag: 0,
+    cotStats: {},
+
+    get cotTotalPags() { return Math.ceil(this.cotFiltradas.length / POR_PAGINA) || 1; },
+    get cotPagina() {
+      const s = this.cotPag * POR_PAGINA;
+      return this.cotFiltradas.slice(s, s + POR_PAGINA);
+    },
+
     get horasCols() {
       const arr = Array.from({length:24}, (_,h) => ({ hora: h, eventos: 0, pct: 0 }));
       const max = Math.max(1, ...(this.an.por_hora||[]).map(r => r.eventos));
@@ -623,6 +738,50 @@ function adminApp() {
       }
       this.cfgSalvando = false;
       setTimeout(() => this.cfgMsg = '', 4000);
+    },
+
+    async carregarCotacoes() {
+      if (!this.autenticado) return;
+      this.cotCarregando = true;
+      try {
+        const r = await fetch(`${API}/admin/cotacoes?token=${encodeURIComponent(this.token)}&limit=500`);
+        if (r.status === 403) { this.sair(); return; }
+        const d = await r.json();
+        this.cotacoes = d.cotacoes || [];
+        this.cotStats = {
+          total: d.total || 0,
+          hoje: d.hoje || 0,
+          comTel: this.cotacoes.filter(c => c.telefone).length,
+        };
+        this.aplicarFiltCot();
+      } catch {}
+      this.cotCarregando = false;
+    },
+
+    aplicarFiltCot() {
+      this.cotPag = 0;
+      const q = this.cotFiltro.toLowerCase();
+      this.cotFiltradas = this.cotacoes.filter(c => {
+        if (q && !`${c.nome_cliente} ${c.medida_buscada} ${c.filial_interesse} ${c.telefone}`.toLowerCase().includes(q)) return false;
+        if (this.cotFiltroOrigem && c.origem !== this.cotFiltroOrigem) return false;
+        return true;
+      });
+    },
+
+    exportarCotCSV() {
+      const cols = ['id','nome_cliente','telefone','medida_buscada','veiculo','filial_interesse','status','origem','criado_em'];
+      const header = cols.join(';');
+      const rows = this.cotFiltradas.map(c =>
+        cols.map(k => `"${(c[k] ?? '').toString().replace(/"/g,'""')}"`).join(';')
+      );
+      const csv = [header, ...rows].join('\n');
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fox_cotacoes_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
     },
 
     exportarCSV() {

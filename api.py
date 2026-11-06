@@ -864,6 +864,33 @@ def registrar_cotacao(req: CotacaoRequest, request: Request):
     return {"id": lead_id, "whatsapp_link": whatsapp_link}
 
 
+@app.get("/admin/cotacoes", tags=["Admin"])
+def listar_cotacoes(token: str = Query(...), limit: int = Query(200, le=1000)):
+    """Lista cotações do popup (tabela lead) — requer token admin."""
+    admin_token = os.environ.get("FOX_ADMIN_TOKEN", "fox2024")
+    if token != admin_token:
+        raise HTTPException(403, "Token inválido")
+    conn = _conn()
+    rows = conn.execute(
+        "SELECT * FROM lead ORDER BY criado_em DESC LIMIT ?", (limit,)
+    ).fetchall()
+    total = conn.execute("SELECT COUNT(*) FROM lead").fetchone()[0]
+    hoje = conn.execute(
+        "SELECT COUNT(*) FROM lead WHERE date(criado_em)=date('now')"
+    ).fetchone()[0]
+    conn.close()
+    cotacoes = []
+    for row in rows:
+        r = _row_to_dict(row)
+        if r.get("itens_json"):
+            try:
+                r["itens"] = json.loads(r["itens_json"])
+            except Exception:
+                r["itens"] = []
+        cotacoes.append(r)
+    return {"cotacoes": cotacoes, "total": total, "hoje": hoje}
+
+
 @app.get("/cotacao/{lead_id}", tags=["Cotação"])
 def consultar_cotacao(lead_id: int):
     conn = _conn()
