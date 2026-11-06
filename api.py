@@ -157,7 +157,7 @@ def sitemap():
     finally:
         conn.close()
 
-    base = "https://foxpneus.onrender.com"
+    base = "https://foxsitechat.onrender.com"
     today = date.today().isoformat()
     filiais = ["porto-velho", "manaus", "ji-parana", "ariquemes", "cacoal", "vilhena", "parintins", "xapuri"]
 
@@ -203,10 +203,10 @@ async def indexnow_submit(token: str = ""):
     if token != os.environ.get("ADMIN_TOKEN", "foxadmin2024"):
         raise HTTPException(status_code=403)
     import urllib.request, json as _json
-    base = "https://foxpneus.onrender.com"
+    base = "https://foxsitechat.onrender.com"
     urls = [base + "/", base + "/sitemap.xml"]
     payload = {
-        "host": "foxpneus.onrender.com",
+        "host": "foxsitechat.onrender.com",
         "key": _INDEXNOW_KEY,
         "keyLocation": f"{base}/{_INDEXNOW_KEY}.txt",
         "urlList": urls
@@ -1060,10 +1060,10 @@ async def upload_banco(token: str = Query(...), file: UploadFile = File(...)):
         try:
             import urllib.request, json as _json
             payload = {
-                "host": "foxpneus.onrender.com",
+                "host": "foxsitechat.onrender.com",
                 "key": _INDEXNOW_KEY,
-                "keyLocation": f"https://foxpneus.onrender.com/{_INDEXNOW_KEY}.txt",
-                "urlList": ["https://foxpneus.onrender.com/", "https://foxpneus.onrender.com/sitemap.xml"]
+                "keyLocation": f"https://foxsitechat.onrender.com/{_INDEXNOW_KEY}.txt",
+                "urlList": ["https://foxsitechat.onrender.com/", "https://foxsitechat.onrender.com/sitemap.xml"]
             }
             req = urllib.request.Request(
                 "https://api.indexnow.org/indexnow",
