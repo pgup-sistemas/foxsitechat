@@ -144,6 +144,7 @@ CREATE TABLE IF NOT EXISTS lead (
     veiculo         TEXT,
     filial_interesse TEXT,
     itens_json      TEXT,                    -- JSON dos produtos cotados
+    email           TEXT,
     status          TEXT NOT NULL DEFAULT 'novo',  -- novo | contatado | fechado | perdido
     origem          TEXT NOT NULL DEFAULT 'web',
     criado_em       TEXT NOT NULL DEFAULT (datetime('now')),
@@ -234,6 +235,11 @@ def get_conn(db_path: Path = DB_PATH) -> sqlite3.Connection:
     conn.execute("PRAGMA foreign_keys = ON")
     conn.execute("PRAGMA journal_mode = WAL")
     conn.execute("PRAGMA busy_timeout = 30000")
+    # migration: adiciona coluna email na tabela lead se ainda não existir
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(lead)")}
+    if "email" not in cols:
+        conn.execute("ALTER TABLE lead ADD COLUMN email TEXT")
+        conn.commit()
     return conn
 
 

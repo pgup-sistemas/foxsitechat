@@ -748,7 +748,7 @@ def admin_panel():
 
 @app.get("/admin/leads", tags=["Marketing"])
 def listar_leads(token: str = Query(...), limit: int = Query(100, le=500)):
-    """Lista leads capturados (requer token admin)."""
+    """Lista leads de e-mail marketing (requer token admin)."""
     admin_token = os.environ.get("FOX_ADMIN_TOKEN", "fox2024")
     if token != admin_token:
         raise HTTPException(403, "Token inválido")
@@ -758,6 +758,51 @@ def listar_leads(token: str = Query(...), limit: int = Query(100, le=500)):
     ).fetchall()
     conn.close()
     return {"leads": _rows_to_list(rows), "total": len(_rows_to_list(rows))}
+
+
+@app.get("/admin/contatos", tags=["Admin"])
+def listar_contatos(token: str = Query(...), limit: int = Query(500, le=2000)):
+    """Lista unificada: cotações (lead) + cadastros e-mail (leads), ordenados por data."""
+    admin_token = os.environ.get("FOX_ADMIN_TOKEN", "fox2024")
+    if token != admin_token:
+        raise HTTPException(403, "Token inválido")
+    conn = _conn()
+    rows = conn.execute("""
+        SELECT
+            'cotacao'       AS tipo,
+            id,
+            nome_cliente    AS nome,
+            telefone,
+            email,
+            medida_buscada  AS interesse,
+            filial_interesse AS filial,
+            origem,
+            status,
+            criado_em
+        FROM lead
+        UNION ALL
+        SELECT
+            'lead_email'    AS tipo,
+            id,
+            nome,
+            telefone,
+            email,
+            interesse,
+            filial_int      AS filial,
+            origem,
+            NULL            AS status,
+            criado_em
+        FROM leads
+        ORDER BY criado_em DESC
+        LIMIT ?
+    """, (limit,)).fetchall()
+    total = conn.execute("SELECT COUNT(*) FROM lead").fetchone()[0] + \
+            conn.execute("SELECT COUNT(*) FROM leads").fetchone()[0]
+    hoje_q = "SELECT COUNT(*) FROM lead WHERE date(criado_em)=date('now')"
+    hoje_l = "SELECT COUNT(*) FROM leads WHERE date(criado_em)=date('now')"
+    hoje = conn.execute(hoje_q).fetchone()[0] + conn.execute(hoje_l).fetchone()[0]
+    conn.close()
+    return {"contatos": _rows_to_list(rows), "total": total, "hoje": hoje}
 
 
 @app.get("/admin/config", tags=["Admin"])
@@ -816,11 +861,11 @@ def registrar_cotacao(req: CotacaoRequest, request: Request):
     medida = req.medida_buscada or req.medida
     filial = req.filial_interesse or req.filial_id
     cur = conn.execute("""
-        INSERT INTO lead(nome_cliente, telefone, medida_buscada, veiculo,
+        INSERT INTO lead(nome_cliente, telefone, email, medida_buscada, veiculo,
                          filial_interesse, itens_json, origem)
-        VALUES (?,?,?,?,?,?,?)
+        VALUES (?,?,?,?,?,?,?,?)
     """, (
-        nome, req.telefone, medida, req.veiculo,
+        nome, req.telefone, req.email, medida, req.veiculo,
         filial, json.dumps(req.itens or []), "web",
     ))
     lead_id = cur.lastrowid

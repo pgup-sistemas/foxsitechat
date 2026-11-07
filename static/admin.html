@@ -121,11 +121,8 @@ td.nome{color:var(--fg);font-weight:500}
 
   <!-- Abas -->
   <div class="tabs">
-    <button class="tab-btn" :class="{active:aba==='leads'}" @click="aba='leads'">
-      Leads
-    </button>
-    <button class="tab-btn" :class="{active:aba==='cotacoes'}" @click="aba='cotacoes';carregarCotacoes()">
-      Cotações
+    <button class="tab-btn" :class="{active:aba==='contatos'}" @click="aba='contatos'">
+      Contatos
     </button>
     <button class="tab-btn" :class="{active:aba==='analise'}" @click="aba='analise';carregarAnalytics()">
       Análise de Visitantes
@@ -135,151 +132,48 @@ td.nome{color:var(--fg);font-weight:500}
     </button>
   </div>
 
-  <!-- ══ ABA LEADS ══ -->
-  <div x-show="aba==='leads'">
+  <!-- ══ ABA CONTATOS ══ -->
+  <div x-show="aba==='contatos'">
 
-  <!-- Stats -->
   <div class="stats">
     <div class="stat">
-      <div class="stat-val" x-text="stats.total || 0"></div>
-      <div class="stat-lbl">Total de leads</div>
+      <div class="stat-val" x-text="ctStats.total||0"></div>
+      <div class="stat-lbl">Total de contatos</div>
     </div>
     <div class="stat">
-      <div class="stat-val" x-text="stats.aceita || 0"></div>
-      <div class="stat-lbl">Aceitaram e-mail</div>
+      <div class="stat-val" x-text="ctStats.hoje||0"></div>
+      <div class="stat-lbl">Hoje</div>
     </div>
     <div class="stat">
-      <div class="stat-val" x-text="stats.hoje || 0"></div>
-      <div class="stat-lbl">Cadastros hoje</div>
+      <div class="stat-val" x-text="ctStats.comTel||0"></div>
+      <div class="stat-lbl">Com WhatsApp</div>
     </div>
     <div class="stat">
-      <div class="stat-val" x-text="stats.comEmail || 0"></div>
+      <div class="stat-val" x-text="ctStats.comEmail||0"></div>
       <div class="stat-lbl">Com e-mail</div>
     </div>
   </div>
 
-  <!-- Toolbar -->
   <div class="toolbar">
-    <input class="search-box" type="text" x-model="filtro" placeholder="Buscar nome, e-mail, cidade..."
-           @input="aplicarFiltro()">
-    <select class="sel" x-model="filtroAceita" @change="aplicarFiltro()">
-      <option value="">Todos</option>
-      <option value="1">Aceitaram e-mail</option>
-      <option value="0">Não aceitaram</option>
+    <input class="search-box" type="text" x-model="ctFiltro" placeholder="Buscar nome, e-mail, medida..."
+           @input="aplicarFiltCt()">
+    <select class="sel" x-model="ctFiltroTipo" @change="aplicarFiltCt()">
+      <option value="">Todos os tipos</option>
+      <option value="cotacao">Cotação</option>
+      <option value="lead_email">E-mail mkt</option>
     </select>
-    <select class="sel" x-model="filtroCidade" @change="aplicarFiltro()">
-      <option value="">Todas as cidades</option>
-      <template x-for="c in cidades" :key="c">
-        <option :value="c" x-text="c"></option>
-      </template>
-    </select>
-    <div style="flex:1"></div>
-    <button class="btn-outline" @click="exportarCSV()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Exportar CSV
-    </button>
-    <button class="btn-outline" @click="carregar()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-      Atualizar
-    </button>
-  </div>
-
-  <!-- Tabela -->
-  <div class="tbl-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Nome</th>
-          <th>E-mail</th>
-          <th>WhatsApp</th>
-          <th>Cidade</th>
-          <th>E-mail mkt</th>
-          <th>Origem</th>
-          <th>Cadastro</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr x-show="carregando" class="loading-row">
-          <td colspan="8">Carregando...</td>
-        </tr>
-        <tr x-show="!carregando && leadsPagina.length === 0">
-          <td colspan="8" class="empty">Nenhum lead encontrado.</td>
-        </tr>
-        <template x-for="l in leadsPagina" :key="l.id">
-          <tr>
-            <td class="dt" x-text="l.id"></td>
-            <td class="nome" x-text="l.nome"></td>
-            <td>
-              <span x-show="l.email">
-                <a :href="'mailto:'+l.email" x-text="l.email" style="color:var(--fg2)"></a>
-              </span>
-              <span x-show="!l.email" style="color:#333">—</span>
-            </td>
-            <td>
-              <span x-show="l.telefone">
-                <a :href="'https://wa.me/55'+l.telefone.replace(/\D/g,'')" target="_blank"
-                   x-text="l.telefone" style="color:#4caf50"></a>
-              </span>
-              <span x-show="!l.telefone" style="color:#333">—</span>
-            </td>
-            <td x-text="l.cidade||'—'"></td>
-            <td>
-              <span class="chip" x-show="l.aceita_email==1">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Sim
-              </span>
-              <span class="chip off" x-show="l.aceita_email!=1">Não</span>
-            </td>
-            <td class="dt" x-text="l.origem||'catalogo'"></td>
-            <td class="dt" x-text="formatDate(l.criado_em)"></td>
-          </tr>
-        </template>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Paginação -->
-  <div class="pgn" x-show="totalPaginas > 1">
-    <button class="pgn-btn" @click="pagina--" :disabled="pagina===0" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Anterior</button>
-    <span class="pgn-info" x-text="`Página ${pagina+1} de ${totalPaginas}`"></span>
-    <button class="pgn-btn" @click="pagina++" :disabled="pagina>=totalPaginas-1" style="display:inline-flex;align-items:center;gap:5px">Próxima <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
-  </div>
-
-  </div><!-- /aba leads -->
-
-  <!-- ══ ABA COTAÇÕES ══ -->
-  <div x-show="aba==='cotacoes'">
-
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-val" x-text="cotStats.total||0"></div>
-      <div class="stat-lbl">Total de cotações</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val" x-text="cotStats.hoje||0"></div>
-      <div class="stat-lbl">Hoje</div>
-    </div>
-    <div class="stat">
-      <div class="stat-val" x-text="cotStats.comTel||0"></div>
-      <div class="stat-lbl">Com WhatsApp</div>
-    </div>
-  </div>
-
-  <div class="toolbar">
-    <input class="search-box" type="text" x-model="cotFiltro" placeholder="Buscar nome, medida, filial..."
-           @input="aplicarFiltCot()">
-    <select class="sel" x-model="cotFiltroOrigem" @change="aplicarFiltCot()">
+    <select class="sel" x-model="ctFiltroOrigem" @change="aplicarFiltCt()">
       <option value="">Todas as origens</option>
       <option value="web">web</option>
       <option value="chat_ia">chat IA</option>
+      <option value="catalogo">catálogo</option>
     </select>
     <div style="flex:1"></div>
-    <button class="btn-outline" @click="exportarCotCSV()">
+    <button class="btn-outline" @click="exportarCtCSV()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Exportar CSV
     </button>
-    <button class="btn-outline" @click="carregarCotacoes()">
+    <button class="btn-outline" @click="carregarContatos()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
       Atualizar
     </button>
@@ -289,43 +183,46 @@ td.nome{color:var(--fg);font-weight:500}
     <table>
       <thead>
         <tr>
-          <th>#</th>
+          <th>Tipo</th>
           <th>Nome</th>
           <th>WhatsApp</th>
-          <th>Medida</th>
-          <th>Veículo</th>
+          <th>E-mail</th>
+          <th>Interesse / Medida</th>
           <th>Filial</th>
-          <th>Status</th>
           <th>Origem</th>
           <th>Data</th>
         </tr>
       </thead>
       <tbody>
-        <tr x-show="cotCarregando" class="loading-row">
-          <td colspan="9">Carregando...</td>
+        <tr x-show="ctCarregando" class="loading-row">
+          <td colspan="8">Carregando...</td>
         </tr>
-        <tr x-show="!cotCarregando && cotPagina.length===0">
-          <td colspan="9" class="empty">Nenhuma cotação encontrada.</td>
+        <tr x-show="!ctCarregando && ctPagina.length===0">
+          <td colspan="8" class="empty">Nenhum contato encontrado.</td>
         </tr>
-        <template x-for="c in cotPagina" :key="c.id">
+        <template x-for="(c,i) in ctPagina" :key="c.tipo+'-'+c.id+'-'+i">
           <tr>
-            <td class="dt" x-text="c.id"></td>
-            <td class="nome" x-text="c.nome_cliente||'—'"></td>
+            <td>
+              <span class="chip" :class="c.tipo==='cotacao'?'':'off'"
+                    x-text="c.tipo==='cotacao'?'Cotação':'E-mail mkt'"></span>
+            </td>
+            <td class="nome" x-text="c.nome||'—'"></td>
             <td>
               <span x-show="c.telefone">
-                <a :href="'https://wa.me/55'+c.telefone.replace(/\D/g,'')" target="_blank"
+                <a :href="'https://wa.me/55'+(c.telefone||'').replace(/\D/g,'')" target="_blank"
                    x-text="c.telefone" style="color:#4caf50"></a>
               </span>
               <span x-show="!c.telefone" style="color:#333">—</span>
             </td>
-            <td style="color:var(--gold)" x-text="c.medida_buscada||'—'"></td>
-            <td class="dt" x-text="c.veiculo||'—'"></td>
-            <td class="dt" x-text="c.filial_interesse||'—'"></td>
             <td>
-              <span class="chip" :class="c.status==='fechado'?'':c.status==='novo'?'off':''"
-                    x-text="c.status||'novo'"></span>
+              <span x-show="c.email">
+                <a :href="'mailto:'+c.email" x-text="c.email" style="color:var(--fg2);font-size:12px"></a>
+              </span>
+              <span x-show="!c.email" style="color:#333">—</span>
             </td>
-            <td class="dt" x-text="c.origem||'web'"></td>
+            <td style="color:var(--gold);font-size:12px" x-text="c.interesse||'—'"></td>
+            <td class="dt" x-text="c.filial||'—'"></td>
+            <td class="dt" x-text="c.origem||'—'"></td>
             <td class="dt" x-text="formatDate(c.criado_em)"></td>
           </tr>
         </template>
@@ -333,17 +230,17 @@ td.nome{color:var(--fg);font-weight:500}
     </table>
   </div>
 
-  <div class="pgn" x-show="cotTotalPags > 1">
-    <button class="pgn-btn" @click="cotPag--" :disabled="cotPag===0" style="display:inline-flex;align-items:center;gap:5px">
+  <div class="pgn" x-show="ctTotalPags > 1">
+    <button class="pgn-btn" @click="ctPag--" :disabled="ctPag===0" style="display:inline-flex;align-items:center;gap:5px">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Anterior
     </button>
-    <span class="pgn-info" x-text="`Página ${cotPag+1} de ${cotTotalPags}`"></span>
-    <button class="pgn-btn" @click="cotPag++" :disabled="cotPag>=cotTotalPags-1" style="display:inline-flex;align-items:center;gap:5px">
+    <span class="pgn-info" x-text="`Página ${ctPag+1} de ${ctTotalPags}`"></span>
+    <button class="pgn-btn" @click="ctPag++" :disabled="ctPag>=ctTotalPags-1" style="display:inline-flex;align-items:center;gap:5px">
       Próxima <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </button>
   </div>
 
-  </div><!-- /aba cotacoes -->
+  </div><!-- /aba contatos -->
 
   <!-- ══ ABA ANÁLISE ══ -->
   <div x-show="aba==='analise'">
@@ -566,33 +463,25 @@ function adminApp() {
     tokenInput: '',
     loginErro: '',
     token: '',
-    aba: 'leads',
-    leads: [],
-    leadsFiltrados: [],
-    carregando: false,
-    filtro: '',
-    filtroAceita: '',
-    filtroCidade: '',
-    cidades: [],
-    pagina: 0,
-    stats: {},
+    aba: 'contatos',
     an: {},
     anCarregando: false,
     anDias: '30',
 
-    // cotações
-    cotacoes: [],
-    cotFiltradas: [],
-    cotCarregando: false,
-    cotFiltro: '',
-    cotFiltroOrigem: '',
-    cotPag: 0,
-    cotStats: {},
+    // contatos (unificado)
+    contatos: [],
+    ctFiltradas: [],
+    ctCarregando: false,
+    ctFiltro: '',
+    ctFiltroTipo: '',
+    ctFiltroOrigem: '',
+    ctPag: 0,
+    ctStats: {},
 
-    get cotTotalPags() { return Math.ceil(this.cotFiltradas.length / POR_PAGINA) || 1; },
-    get cotPagina() {
-      const s = this.cotPag * POR_PAGINA;
-      return this.cotFiltradas.slice(s, s + POR_PAGINA);
+    get ctTotalPags() { return Math.ceil(this.ctFiltradas.length / POR_PAGINA) || 1; },
+    get ctPagina() {
+      const s = this.ctPag * POR_PAGINA;
+      return this.ctFiltradas.slice(s, s + POR_PAGINA);
     },
 
     get horasCols() {
@@ -614,19 +503,19 @@ function adminApp() {
 
     async init() {
       const t = sessionStorage.getItem('fox_admin_token');
-      if (t) { this.token = t; await this.carregar(); }
+      if (t) { this.token = t; await this.carregarContatos(); }
     },
 
     async login() {
       this.loginErro = '';
       try {
-        const r = await fetch(`${API}/admin/leads?token=${encodeURIComponent(this.tokenInput)}&limit=1`);
+        const r = await fetch(`${API}/admin/contatos?token=${encodeURIComponent(this.tokenInput)}&limit=1`);
         if (r.status === 403) { this.loginErro = 'Token inválido.'; return; }
         if (!r.ok) { this.loginErro = 'Erro ao conectar.'; return; }
         this.token = this.tokenInput;
         sessionStorage.setItem('fox_admin_token', this.token);
         this.autenticado = true;
-        await this.carregar();
+        await this.carregarContatos();
       } catch {
         this.loginErro = 'Servidor offline ou inacessível.';
       }
@@ -636,43 +525,7 @@ function adminApp() {
       sessionStorage.removeItem('fox_admin_token');
       this.autenticado = false;
       this.token = '';
-      this.leads = [];
-    },
-
-    async carregar() {
-      this.carregando = true;
-      try {
-        const r = await fetch(`${API}/admin/leads?token=${encodeURIComponent(this.token)}&limit=500`);
-        if (r.status === 403) { this.sair(); return; }
-        const d = await r.json();
-        this.leads = d.leads || [];
-        this.calcStats();
-        this.cidades = [...new Set(this.leads.map(l => l.cidade).filter(Boolean))].sort();
-        this.autenticado = true;
-        this.aplicarFiltro();
-      } catch {}
-      this.carregando = false;
-    },
-
-    calcStats() {
-      const hoje = new Date().toISOString().slice(0, 10);
-      this.stats = {
-        total: this.leads.length,
-        aceita: this.leads.filter(l => l.aceita_email == 1).length,
-        hoje: this.leads.filter(l => (l.criado_em || '').startsWith(hoje)).length,
-        comEmail: this.leads.filter(l => l.email).length,
-      };
-    },
-
-    aplicarFiltro() {
-      this.pagina = 0;
-      const q = this.filtro.toLowerCase();
-      this.leadsFiltrados = this.leads.filter(l => {
-        if (q && !`${l.nome} ${l.email} ${l.cidade} ${l.telefone}`.toLowerCase().includes(q)) return false;
-        if (this.filtroAceita !== '' && String(l.aceita_email) !== this.filtroAceita) return false;
-        if (this.filtroCidade && l.cidade !== this.filtroCidade) return false;
-        return true;
-      });
+      this.contatos = [];
     },
 
     formatDate(dt) {
@@ -740,38 +593,41 @@ function adminApp() {
       setTimeout(() => this.cfgMsg = '', 4000);
     },
 
-    async carregarCotacoes() {
+    async carregarContatos() {
       if (!this.autenticado) return;
-      this.cotCarregando = true;
+      this.ctCarregando = true;
       try {
-        const r = await fetch(`${API}/admin/cotacoes?token=${encodeURIComponent(this.token)}&limit=500`);
+        const r = await fetch(`${API}/admin/contatos?token=${encodeURIComponent(this.token)}&limit=1000`);
         if (r.status === 403) { this.sair(); return; }
         const d = await r.json();
-        this.cotacoes = d.cotacoes || [];
-        this.cotStats = {
+        this.contatos = d.contatos || [];
+        this.ctStats = {
           total: d.total || 0,
           hoje: d.hoje || 0,
-          comTel: this.cotacoes.filter(c => c.telefone).length,
+          comTel: this.contatos.filter(c => c.telefone).length,
+          comEmail: this.contatos.filter(c => c.email).length,
         };
-        this.aplicarFiltCot();
+        this.autenticado = true;
+        this.aplicarFiltCt();
       } catch {}
-      this.cotCarregando = false;
+      this.ctCarregando = false;
     },
 
-    aplicarFiltCot() {
-      this.cotPag = 0;
-      const q = this.cotFiltro.toLowerCase();
-      this.cotFiltradas = this.cotacoes.filter(c => {
-        if (q && !`${c.nome_cliente} ${c.medida_buscada} ${c.filial_interesse} ${c.telefone}`.toLowerCase().includes(q)) return false;
-        if (this.cotFiltroOrigem && c.origem !== this.cotFiltroOrigem) return false;
+    aplicarFiltCt() {
+      this.ctPag = 0;
+      const q = this.ctFiltro.toLowerCase();
+      this.ctFiltradas = this.contatos.filter(c => {
+        if (q && !`${c.nome} ${c.email} ${c.telefone} ${c.interesse} ${c.filial}`.toLowerCase().includes(q)) return false;
+        if (this.ctFiltroTipo && c.tipo !== this.ctFiltroTipo) return false;
+        if (this.ctFiltroOrigem && c.origem !== this.ctFiltroOrigem) return false;
         return true;
       });
     },
 
-    exportarCotCSV() {
-      const cols = ['id','nome_cliente','telefone','medida_buscada','veiculo','filial_interesse','status','origem','criado_em'];
+    exportarCtCSV() {
+      const cols = ['tipo','id','nome','telefone','email','interesse','filial','origem','criado_em'];
       const header = cols.join(';');
-      const rows = this.cotFiltradas.map(c =>
+      const rows = this.ctFiltradas.map(c =>
         cols.map(k => `"${(c[k] ?? '').toString().replace(/"/g,'""')}"`).join(';')
       );
       const csv = [header, ...rows].join('\n');
@@ -779,23 +635,7 @@ function adminApp() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `fox_cotacoes_${new Date().toISOString().slice(0,10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-    },
-
-    exportarCSV() {
-      const cols = ['id','nome','email','telefone','cidade','aceita_email','origem','criado_em'];
-      const header = cols.join(';');
-      const rows = this.leadsFiltrados.map(l =>
-        cols.map(c => `"${(l[c] ?? '').toString().replace(/"/g,'""')}"`).join(';')
-      );
-      const csv = [header, ...rows].join('\n');
-      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `fox_leads_${new Date().toISOString().slice(0,10)}.csv`;
+      a.download = `fox_contatos_${new Date().toISOString().slice(0,10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     },
