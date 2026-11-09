@@ -852,11 +852,29 @@ h1 em{font-style:normal;color:var(--red)}
       <span class="tp-sep">·</span>
       <span class="tp">8 filiais RO · AM · AC</span>
     </div>
-    <div x-show="heroTopBusca" x-cloak style="margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-      <span style="font-size:12px;color:var(--muted)">📈 Mais buscado agora:</span>
-      <button @click="busca.medida=heroTopBusca;tab='medida';pesquisar()"
-              style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:13px;font-weight:700;padding:0;text-decoration:underline;text-underline-offset:3px"
-              x-text="heroTopBusca"></button>
+    <div x-show="heroTopBuscas.length" x-cloak style="margin-bottom:14px">
+      <div style="font-size:11px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:5px">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Mais buscados agora
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <template x-for="(item, i) in heroTopBuscas" :key="item.medida">
+          <button @click="busca.medida=item.medida;tab='medida';pesquisar()"
+                  :style="i===0 ? 'background:rgba(232,184,75,.12);border-color:rgba(232,184,75,.4);color:var(--gold)' : 'background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:var(--fg)'"
+                  style="display:inline-flex;align-items:center;gap:5px;border:1px solid;border-radius:20px;padding:5px 11px;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;white-space:nowrap"
+                  onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">
+            <svg width="13" height="13" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round">
+              <circle cx="50" cy="50" r="42"/>
+              <circle cx="50" cy="50" r="22"/>
+              <line x1="50" y1="8" x2="50" y2="28"/>
+              <line x1="50" y1="72" x2="50" y2="92"/>
+              <line x1="8" y1="50" x2="28" y2="50"/>
+              <line x1="72" y1="50" x2="92" y2="50"/>
+            </svg>
+            <span x-text="item.medida"></span>
+          </button>
+        </template>
+      </div>
     </div>
     <div style="margin-bottom:12px">
       <button @click="leadModalAberto=true;leadOk=false"
@@ -1382,6 +1400,7 @@ function foxApp() {
     exitShown: false,
     exitTelefone: '',
     heroTopBusca: null,
+    heroTopBuscas: [],
 
     async init() {
       try {
@@ -1426,7 +1445,10 @@ function foxApp() {
         try {
           const r = await fetch(`${API}/top-buscas?dias=7`);
           const d = await r.json();
-          if (d.top && d.top.length) this.heroTopBusca = d.top[0].medida;
+          if (d.top && d.top.length) {
+            this.heroTopBusca = d.top[0].medida;
+            this.heroTopBuscas = d.top.slice(0, 5);
+          }
         } catch {}
       }, { timeout: 10000 });
 
