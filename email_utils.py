@@ -234,6 +234,138 @@ def confirmacao_cotacao(nome: str, email: str, medida: str = "", filial_nome: st
     enviar_async(email, assunto, html, texto)
 
 
+def nurture_d3(nome: str, email: str) -> None:
+    """E-mail de nurture enviado 3 dias após o cadastro do lead."""
+    if not email:
+        return
+    emp_nome   = _empresa("empresa_nome",    "Fox Pneus")
+    emp_site   = _empresa("empresa_site",    "https://catalogo.redefox.com.br")
+    emp_wa     = _empresa("empresa_whatsapp","5569992323013")
+    emp_wa_fmt = _empresa("empresa_whatsapp_fmt", "(69) 99232-3013")
+
+    nome_fmt = nome.strip().split()[0].capitalize() if nome else "Cliente"
+    assunto  = f"{emp_nome} — Ainda procurando o pneu certo? 🔍"
+
+    html = f"""<!DOCTYPE html><html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#111;font-family:Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#111;">
+  <tr><td align="center" style="padding:32px 16px;">
+    <table width="600" cellpadding="0" cellspacing="0"
+           style="background:#1a1a1a;border-radius:12px;overflow:hidden;max-width:600px;">
+      <tr><td style="background:#c0392b;padding:24px 32px;text-align:center;">
+        <h1 style="margin:0;color:#fff;font-size:26px;font-weight:900;letter-spacing:2px;text-transform:uppercase;">
+          {emp_nome.upper()}</h1>
+      </td></tr>
+      <tr><td style="padding:28px 32px 24px;">
+        <h2 style="margin:0 0 12px;color:#fff;font-size:20px;">Olá, {nome_fmt}! 🔍</h2>
+        <p style="margin:0 0 16px;color:#ccc;font-size:15px;line-height:1.6;">
+          Notamos que você se cadastrou no nosso catálogo. Já encontrou o pneu ideal para o seu veículo?
+        </p>
+        <p style="margin:0 0 20px;color:#ccc;font-size:15px;line-height:1.6;">
+          No nosso catálogo você pode buscar por medida, comparar marcas lado a lado e solicitar cotação
+          em qualquer uma das nossas 8 filiais — sem sair de casa.
+        </p>
+        <table cellpadding="0" cellspacing="0"><tr>
+          <td style="background:#c0392b;border-radius:6px;">
+            <a href="{emp_site}" style="display:inline-block;padding:14px 28px;color:#fff;
+               font-size:15px;font-weight:700;text-decoration:none;letter-spacing:1px;">
+              Buscar meu pneu →</a>
+          </td></tr></table>
+        <p style="margin:20px 0 0;color:#888;font-size:13px;line-height:1.6;">
+          Ou se preferir, nosso time responde pelo WhatsApp:
+          <a href="https://wa.me/{emp_wa}" style="color:#e74c3c;font-weight:700;text-decoration:none;">{emp_wa_fmt}</a>
+        </p>
+      </td></tr>
+      <tr><td style="background:#111;padding:14px 32px;border-top:1px solid #222;">
+        <p style="margin:0;color:#555;font-size:11px;text-align:center;">
+          {emp_nome} · <a href="{emp_site}/politica" style="color:#555;">Cancelar inscrição</a>
+        </p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body></html>"""
+
+    texto = (
+        f"Olá, {nome_fmt}!\n\n"
+        f"Já encontrou o pneu ideal? No catálogo da {emp_nome} você busca por medida,\n"
+        f"compara marcas e solicita cotação em qualquer filial.\n\n"
+        f"Acesse: {emp_site}\nWhatsApp: {emp_wa_fmt}\n\n{emp_nome}"
+    )
+    enviar_async(email, assunto, html, texto)
+
+
+def nurture_d7(nome: str, email: str) -> None:
+    """E-mail de nurture enviado 7 dias após o cadastro — oferta + urgência."""
+    if not email:
+        return
+    emp_nome   = _empresa("empresa_nome",    "Fox Pneus")
+    emp_site   = _empresa("empresa_site",    "https://catalogo.redefox.com.br")
+    emp_wa     = _empresa("empresa_whatsapp","5569992323013")
+    emp_wa_fmt = _empresa("empresa_whatsapp_fmt", "(69) 99232-3013")
+
+    nome_fmt = nome.strip().split()[0].capitalize() if nome else "Cliente"
+    assunto  = f"{emp_nome} — Oferta especial para você 🎯"
+
+    html = f"""<!DOCTYPE html><html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#111;font-family:Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#111;">
+  <tr><td align="center" style="padding:32px 16px;">
+    <table width="600" cellpadding="0" cellspacing="0"
+           style="background:#1a1a1a;border-radius:12px;overflow:hidden;max-width:600px;">
+      <tr><td style="background:#c0392b;padding:24px 32px;text-align:center;">
+        <h1 style="margin:0;color:#fff;font-size:26px;font-weight:900;letter-spacing:2px;text-transform:uppercase;">
+          {emp_nome.upper()}</h1>
+      </td></tr>
+      <tr><td style="padding:28px 32px 24px;">
+        <h2 style="margin:0 0 12px;color:#fff;font-size:20px;">
+          {nome_fmt}, temos uma oferta para você! 🎯</h2>
+        <p style="margin:0 0 16px;color:#ccc;font-size:15px;line-height:1.6;">
+          Faz 7 dias que você se cadastrou na {emp_nome} e queremos ajudá-lo(a) a fechar negócio.
+        </p>
+        <div style="background:#222;border-left:4px solid #c0392b;padding:16px 20px;
+                    border-radius:0 8px 8px 0;margin:0 0 20px;">
+          <p style="margin:0;color:#fff;font-size:15px;font-weight:700;">
+            💬 Fale com um especialista agora</p>
+          <p style="margin:8px 0 0;color:#ccc;font-size:14px;line-height:1.5;">
+            Informe a medida do seu pneu e receba o melhor preço com garantia de estoque
+            na sua cidade — sem compromisso.
+          </p>
+        </div>
+        <table cellpadding="0" cellspacing="0"><tr>
+          <td style="background:#25d366;border-radius:6px;">
+            <a href="https://wa.me/{emp_wa}?text=Ol%C3%A1%2C+vim+pelo+cat%C3%A1logo+e+gostaria+de+uma+cotação"
+               style="display:inline-block;padding:14px 28px;color:#fff;
+                      font-size:15px;font-weight:700;text-decoration:none;letter-spacing:1px;">
+              💬 Pedir cotação pelo WhatsApp</a>
+          </td></tr></table>
+        <p style="margin:20px 0 0;color:#888;font-size:13px;line-height:1.6;">
+          Ou acesse o catálogo:
+          <a href="{emp_site}" style="color:#e74c3c;text-decoration:none;">{emp_site.replace('https://','')}</a>
+        </p>
+      </td></tr>
+      <tr><td style="background:#111;padding:14px 32px;border-top:1px solid #222;">
+        <p style="margin:0;color:#555;font-size:11px;text-align:center;">
+          {emp_nome} · <a href="{emp_site}/politica" style="color:#555;">Cancelar inscrição</a>
+        </p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body></html>"""
+
+    texto = (
+        f"Olá, {nome_fmt}!\n\n"
+        f"Faz 7 dias que você se cadastrou na {emp_nome}.\n"
+        f"Fale com um especialista e receba o melhor preço:\n"
+        f"WhatsApp: {emp_wa_fmt}\n\n"
+        f"Ou acesse: {emp_site}\n\n{emp_nome}"
+    )
+    enviar_async(email, assunto, html, texto)
+
+
 def notificar_vendedor_lead(nome: str, whatsapp: str, email: str = "", interesse: str = "") -> None:
     """Envia e-mail interno ao vendedor quando o chat captura um lead."""
     cfg = _cfg()

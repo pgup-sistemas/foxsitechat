@@ -629,13 +629,14 @@ def capturar_lead(req: LeadRequest, request: Request):
     return {"ok": True, "mensagem": "Cadastro realizado! Em breve entraremos em contato."}
 
 class EventoRequest(BaseModel):
-    tipo:       str                    # busca | wa_click | modal_view | lead_form
-    medida:     Optional[str] = None
-    filial:     Optional[str] = None
-    produto_id: Optional[str] = None
-    produto_nm: Optional[str] = None
-    resultados: Optional[int] = None
-    sessao_id:  Optional[str] = None
+    tipo:        str                    # busca | wa_click | modal_view | lead_form | add_cart
+    medida:      Optional[str] = None
+    filial:      Optional[str] = None
+    produto_id:  Optional[str] = None
+    produto_nm:  Optional[str] = None
+    resultados:  Optional[int] = None
+    sessao_id:   Optional[str] = None
+    dispositivo: Optional[str] = None  # enviado pelo frontend (item 8)
 
 @app.post("/eventos", tags=["Analytics"], status_code=201)
 def registrar_evento(req: EventoRequest, request: "Request"):
@@ -643,13 +644,17 @@ def registrar_evento(req: EventoRequest, request: "Request"):
     import re
     ip_raw = request.headers.get("x-forwarded-for", request.client.host or "")
     ip = ip_raw.split(",")[0].strip()
-    ua  = request.headers.get("user-agent", "")
-    if "Mobile" in ua or "Android" in ua or "iPhone" in ua:
-        dispositivo = "mobile"
-    elif "Tablet" in ua or "iPad" in ua:
-        dispositivo = "tablet"
+    # Prioriza dispositivo enviado pelo JS (mais preciso que User-Agent em proxies)
+    if req.dispositivo:
+        dispositivo = req.dispositivo
     else:
-        dispositivo = "desktop"
+        ua = request.headers.get("user-agent", "")
+        if "Mobile" in ua or "Android" in ua or "iPhone" in ua:
+            dispositivo = "mobile"
+        elif "Tablet" in ua or "iPad" in ua:
+            dispositivo = "tablet"
+        else:
+            dispositivo = "desktop"
 
     cidade_ip = None
     try:
@@ -740,6 +745,90 @@ def analytics(token: str = Query(...), dias: int = Query(30, le=365)):
         "por_dispositivo": por_dispositivo,
         "por_hora": por_hora,
     }
+
+@app.get("/top-buscas", tags=["Analytics"])
+def top_buscas(dias: int = Query(7, le=30)):
+    """Retorna as medidas mais buscadas nos últimos N dias (público, sem token)."""
+    conn = _conn()
+    desde = f"datetime('now', '-{dias} days')"
+    rows = _rows_to_list(conn.execute(f"""
+        SELECT medida, COUNT(*) as total
+        FROM eventos WHERE tipo='busca' AND medida IS NOT NULL
+          AND criado_em >= {desde}
+        GROUP BY medida ORDER BY total DESC LIMIT 5
+    """).fetchall())
+    conn.close()
+    return {"top": rows, "dias": dias}
+
+@app.post("/admin/nurture", tags=["Marketing"])
+def disparar_nurture(token: str = Query(...)):
+    """
+    Dispara e-mails de nurture para leads elegíveis:
+    - D+3: leads cadastrados entre 3 e 4 dias atrás que ainda não receberam nurture_d3
+    - D+7: leads cadastrados entre 7 e 8 dias atrás que ainda não receberam nurture_d7
+    Requer token admin. Idempotente — usa coluna nurture_enviado para controle.
+    """
+    admin_token = os.environ.get("FOX_ADMIN_TOKEN", "fox2024")
+    if token != admin_token:
+        raise HTTPException(403, "Token inválido")
+
+    from email_utils import nurture_d3, nurture_d7
+
+    conn = _conn()
+    # Garante coluna de controle
+    try:
+        conn.execute("ALTER TABLE leads ADD COLUMN nurture_enviado TEXT DEFAULT ''")
+        conn.commit()
+    except Exception:
+        pass  # coluna já existe
+
+    enviados = {"d3": 0, "d7": 0}
+
+    # D+3: criado entre 3 e 4 dias atrás, aceita_email=1, ainda sem nurture_d3
+    rows_d3 = conn.execute("""
+        SELECT id, nome, email FROM leads
+        WHERE aceita_email=1 AND email IS NOT NULL AND email != ''
+          AND criado_em >= datetime('now', '-4 days')
+          AND criado_em <  datetime('now', '-3 days')
+          AND (nurture_enviado IS NULL OR nurture_enviado NOT LIKE '%d3%')
+    """).fetchall()
+    for row in rows_d3:
+        lid, nome, email = row
+        try:
+            nurture_d3(nome or "", email)
+            conn.execute(
+                "UPDATE leads SET nurture_enviado = COALESCE(nurture_enviado,'') || ',d3' WHERE id=?",
+                (lid,)
+            )
+            conn.commit()
+            enviados["d3"] += 1
+        except Exception:
+            pass
+
+    # D+7: criado entre 7 e 8 dias atrás, aceita_email=1, ainda sem nurture_d7
+    rows_d7 = conn.execute("""
+        SELECT id, nome, email FROM leads
+        WHERE aceita_email=1 AND email IS NOT NULL AND email != ''
+          AND criado_em >= datetime('now', '-8 days')
+          AND criado_em <  datetime('now', '-7 days')
+          AND (nurture_enviado IS NULL OR nurture_enviado NOT LIKE '%d7%')
+    """).fetchall()
+    for row in rows_d7:
+        lid, nome, email = row
+        try:
+            nurture_d7(nome or "", email)
+            conn.execute(
+                "UPDATE leads SET nurture_enviado = COALESCE(nurture_enviado,'') || ',d7' WHERE id=?",
+                (lid,)
+            )
+            conn.commit()
+            enviados["d7"] += 1
+        except Exception:
+            pass
+
+    conn.close()
+    return {"ok": True, "enviados": enviados}
+
 
 @app.get("/admin", tags=["Marketing"], include_in_schema=False)
 def admin_panel():
