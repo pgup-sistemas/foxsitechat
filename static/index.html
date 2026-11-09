@@ -974,11 +974,11 @@ h1 em{font-style:normal;color:var(--red)}
   <div class="grid" x-show="!loading&&resultadosFiltrados.length" x-cloak>
     <template x-for="p in resultadosFiltrados" :key="p.cod_item">
       <div class="card">
-        <div class="cimg" :style="p.foto_url ? '' : brandBg(p.marca, p.categoria)">
+        <div class="cimg" :style="p.foto_url ? 'background:#f4f4f4' : brandBg(p.marca, p.categoria)">
           <template x-if="p.foto_url">
             <img :src="p.foto_url" :alt="p.nome" referrerpolicy="no-referrer"
-                 style="width:100%;height:100%;object-fit:contain;padding:8px;box-sizing:border-box"
-                 @error="$el.style.display='none';$el.nextElementSibling.style.display='flex'">
+                 style="width:100%;height:100%;object-fit:contain;padding:10px;box-sizing:border-box;mix-blend-mode:multiply"
+                 @error="$el.parentElement.setAttribute('style',brandBg(p.marca,p.categoria));$el.style.display='none';$el.nextElementSibling.style.display='flex'">
             <div class="cimg-brand" style="display:none" x-text="(p.marca||p.categoria||'PNEU').substring(0,9).toUpperCase()"></div>
           </template>
           <template x-if="!p.foto_url">
