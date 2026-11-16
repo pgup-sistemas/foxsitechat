@@ -41,7 +41,7 @@ FILIAIS = {
     "XAPURI":    "/gdc/md/{WS}/obj/1583/elements?id=8",
 }
 
-OUT_DIR = Path(__file__).resolve().parent / "output"
+OUT_DIR = Path(os.environ.get("FOX_CSV_DIR", str(Path(__file__).resolve().parent / "output")))
 
 
 class GoodData:
