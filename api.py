@@ -1275,6 +1275,88 @@ def recarregar_estoque(token: str = Query(..., description="Token de autorizaç�
 
 
 # ---------------------------------------------------------------------------
+# Atualização de estoque via GoodData (extração + carga em background)
+# ---------------------------------------------------------------------------
+_job_status: dict = {"rodando": False, "ultima_execucao": None, "log": ""}
+
+def _rodar_atualizacao():
+    """Extrai dados do GoodData e carrega no banco (roda em thread separada)."""
+    global _job_status
+    _job_status = {"rodando": True, "ultima_execucao": None, "log": "Iniciando extração..."}
+    try:
+        import subprocess, sys
+        from datetime import datetime
+
+        gd_email = os.environ.get("FOX_GD_EMAIL", "")
+        gd_senha = os.environ.get("FOX_GD_SENHA", "")
+        csv_dir  = os.environ.get("FOX_CSV_DIR", str(BASE_DIR / "data" / "estoque"))
+
+        if not gd_email or not gd_senha:
+            _job_status = {
+                "rodando": False,
+                "ultima_execucao": datetime.now().isoformat(),
+                "log": "ERRO: FOX_GD_EMAIL ou FOX_GD_SENHA não configurados no Render.",
+            }
+            return
+
+        # Garante que o diretório de CSV existe
+        Path(csv_dir).mkdir(parents=True, exist_ok=True)
+
+        extrator = BASE_DIR / "extrair_estoque.py"
+        _job_status["log"] = "Extraindo dados do GoodData..."
+        result = subprocess.run(
+            [sys.executable, str(extrator), "--todas-filiais", "--dir", csv_dir],
+            capture_output=True, text=True, timeout=600,
+            env={**os.environ, "FOX_GD_EMAIL": gd_email, "FOX_GD_SENHA": gd_senha},
+        )
+        log_ext = result.stdout + result.stderr
+
+        _job_status["log"] = "Carregando CSVs no banco..."
+        from carregar_estoque import carregar_tudo as _carregar
+        _carregar(csv_dir=Path(csv_dir))
+
+        conn = _conn()
+        n = conn.execute("SELECT COUNT(*) FROM produto WHERE ativo=1").fetchone()[0]
+        ultima = conn.execute("SELECT MAX(data_extracao) FROM extracao_log").fetchone()[0]
+        conn.close()
+
+        _job_status = {
+            "rodando": False,
+            "ultima_execucao": datetime.now().isoformat(),
+            "log": f"Concluído. {n} produtos. Última extração: {ultima}\n---\n{log_ext[-800:]}",
+        }
+    except Exception as e:
+        from datetime import datetime
+        _job_status = {
+            "rodando": False,
+            "ultima_execucao": datetime.now().isoformat(),
+            "log": f"ERRO: {e}",
+        }
+
+
+@app.post("/admin/atualizar-estoque", tags=["Admin"])
+def atualizar_estoque(token: str = Query(..., description="Token de autorização")):
+    """Extrai dados do GoodData e recarrega o banco. Roda em background (retorna imediatamente)."""
+    admin_token = os.environ.get("FOX_ADMIN_TOKEN", "fox2024")
+    if token != admin_token:
+        raise HTTPException(403, "Token inválido")
+    if _job_status.get("rodando"):
+        return {"status": "em_andamento", "log": _job_status.get("log", "")}
+    t = threading.Thread(target=_rodar_atualizacao, daemon=True)
+    t.start()
+    return {"status": "iniciado", "mensagem": "Extração iniciada em background. Consulte /admin/status-atualizacao para acompanhar."}
+
+
+@app.get("/admin/status-atualizacao", tags=["Admin"])
+def status_atualizacao(token: str = Query(..., description="Token de autorização")):
+    """Retorna o status da última atualização de estoque."""
+    admin_token = os.environ.get("FOX_ADMIN_TOKEN", "fox2024")
+    if token != admin_token:
+        raise HTTPException(403, "Token inválido")
+    return _job_status
+
+
+# ---------------------------------------------------------------------------
 # Busca por veículo (stub — será expandido quando tiver base de compatibilidade)
 # ---------------------------------------------------------------------------
 

@@ -23,6 +23,10 @@ services:
         value: "512"
       - key: FOX_TEMP
         value: "0.3"
+      - key: FOX_GD_EMAIL
+        sync: false
+      - key: FOX_GD_SENHA
+        sync: false
     disk:
       name: foxdata
       mountPath: /opt/render/project/src/data
